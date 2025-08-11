@@ -50,19 +50,13 @@ class CustomUserManager(BaseUserManager):
 
 class Company(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    subdomain = models.CharField(max_length=50)
+    email = models.EmailField(max_length=200)
     is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT,related_name='company_owner')
-    calendar_type = models.CharField(
-        max_length=10, 
-        choices=[('GREGORIAN', 'Gregorian'), ('ETHIOPIAN', 'Ethiopian')],
-        default='GREGORIAN'
-    )
-    base_currency = models.CharField(max_length=3, default='USD')
-    timezone = models.CharField(max_length=50, default='UTC')
-    company_type = models.CharField(choices=[('private', 'private'), ('public', 'public'),('military and public','military and public')], max_length=100, default='Private')
-    
+    company_type = models.CharField(choices=[('private', 'private'), ('public', 'public')], max_length=100, default='Private')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     
     def __str__(self):
         return self.name
@@ -155,16 +149,6 @@ class EmailResetCode(models.Model):
         return timezone.now() > self.created_at + timedelta(minutes=10)
 
 
-class Company(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField()
-    phone = models.CharField(max_length=100)
-    location = models.CharField(max_length=100)
-    is_active = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
 class Configuration(models.Model):
     Company = models.ForeignKey(Company,on_delete=models.CASCADE,null=False,blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -201,7 +185,7 @@ class Housing(models.Model):
     
 
 class Promoter(models.Model):
-    user = models.CharField(max_length=100)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
     level = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

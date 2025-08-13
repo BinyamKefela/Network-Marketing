@@ -74,8 +74,11 @@ class User(AbstractBaseUser,PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
-    is_company_admin = models.BooleanField(default=False)
+    #company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
+    #is_company_admin = models.BooleanField(default=False)
+    wallet_balance = models.DecimalField(max_digits=1000,decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     # Make groups and user_permissions optional by adding blank=True and null=True
     groups = models.ManyToManyField(
@@ -134,6 +137,7 @@ class EmailVerification(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Verification for {self.user.email}"
@@ -144,33 +148,129 @@ class EmailResetCode(models.Model):
     code = models.CharField(max_length=6)
     is_used = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def is_expired(self):
         return timezone.now() > self.created_at + timedelta(minutes=10)
 
-
-class Configuration(models.Model):
-    Company = models.ForeignKey(Company,on_delete=models.CASCADE,null=False,blank=False)
+class MlmSetting(models.Model):
+    max_level = models.IntegerField()
+    min_withdrawal_amount = models.DecimalField(max_digits=1000,decimal_places=2)
+    payout_frequency = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=100,unique=True)
+    description = models.TextField(null=True,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Product(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField(null=True,blank=True)
+    price = models.DecimalField(max_digits=100,decimal_places=2)
+    cost_price = models.DecimalField(max_digits=100,decimal_places=2)
+    is_service = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class CommissionConfiguration(models.Model):
+    level = models.IntegerField()
+    percentage = models.DecimalField(max_digits=3,decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class Sale(models.Model):
+    product = models.ForeignKey(Product,on_delete=models.SET_NULL,null=True,blank=True)
+    seller = models.ForeignKey(User,on_delete=models.CASCADE,related_name='seller')
+    buyer =  models.ForeignKey(User,on_delete=models.CASCADE,related_name='buyer')
+    amount = models.DecimalField(max_digits=100,decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+class Commission(models.Model):
+    sale = models.ForeignKey(Sale,on_delete=models.SET_NULL,null=True,blank=True)
+    seller = models.ForeignKey(User,on_delete=models.CASCADE,related_name='seller')
+    buyer =  models.ForeignKey(User,on_delete=models.CASCADE,related_name='buyer')
+    amount = models.DecimalField(max_digits=100,decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class WalletTransaction(models.Model):
+    WALLET_TRANSACTION_CHOICES = [('credit','credit'),('debit','debit')]
+    user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True)
+    amount = models.DecimalField(max_digits=100,decimal_places=2)
+    type = models.CharField(max_length=100,choices=WALLET_TRANSACTION_CHOICES)
+    reference = models.ForeignKey(Commission,on_delete=models.SET_NULL,null=True,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#------------------------------------------------------------old models--------------------------------------------------
+
+class CommissionConfiguration(models.Model):
+    Company = models.ForeignKey(Company,on_delete=models.CASCADE,null=False,blank=False)
+    level = models.IntegerField(null=False,blank=False)
+    percentage = models.DecimalField(max_digits=3,decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class CompanyConfiguration(models.Model):
+    Company = models.ForeignKey(Company,on_delete=models.CASCADE,null=False,blank=False)
+    max_depth = models.IntegerField()
+    minimum_eligibility_for_housing = models.DecimalField(max_digits=10,decimal_places=2)
+
+
 class Rank(models.Model):
     name = models.CharField(max_length=100)
+    company = models.ForeignKey(Company,on_delete=models.SET_NULL,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
+    quantity = models.DecimalField(max_digits=10000,decimal_places=2)
     selling_price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField(blank=True,null=True)
+    company = models.ForeignKey(Company,on_delete=models.SET_NULL,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
 class ProductImage(models.Model):
-    property = models.ForeignKey(Product,on_delete=models.CASCADE,null=False,blank=False)
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,null=False,blank=False)
     image = models.ImageField(upload_to="properties")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -182,6 +282,9 @@ class Housing(models.Model):
     company = models.ForeignKey(Company,on_delete=models.CASCADE,null=False,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('company','code')
     
 
 class Promoter(models.Model):
@@ -197,6 +300,7 @@ class PromoterHousing(models.Model):
     total_accumulated_amount = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    company = models.ForeignKey(Company,on_delete=models.SET_NULL,null=True,blank=True)
 
 
 class productPayment(models.Model):
@@ -206,6 +310,7 @@ class productPayment(models.Model):
     transction_id = models.CharField(max_length=200,unique=True,null=False,blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    company = models.ForeignKey(Company,on_delete=models.SET_NULL,null=True,blank=True)
 
 
 class PromoterTransaction(models.Model):

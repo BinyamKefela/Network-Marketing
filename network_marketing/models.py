@@ -76,7 +76,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     #company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
     #is_company_admin = models.BooleanField(default=False)
-    wallet_balance = models.DecimalField(max_digits=1000,decimal_places=2)
+    wallet_balance = models.DecimalField(max_digits=1000,decimal_places=2,default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -126,8 +126,7 @@ class User(AbstractBaseUser,PermissionsMixin):
                 os.remove(self.profile_picture.path)
         return super().save(*args, **kwargs)
 
-    class Meta:
-        unique_together = ('email', 'company')
+    
 
 
 auditlog.register(User)
@@ -186,16 +185,16 @@ class CommissionConfiguration(models.Model):
 
 class Sale(models.Model):
     product = models.ForeignKey(Product,on_delete=models.SET_NULL,null=True,blank=True)
-    seller = models.ForeignKey(User,on_delete=models.CASCADE,related_name='seller')
-    buyer =  models.ForeignKey(User,on_delete=models.CASCADE,related_name='buyer')
+    seller = models.ForeignKey(User,on_delete=models.CASCADE,related_name='sale_seller')
+    buyer =  models.ForeignKey(User,on_delete=models.CASCADE,related_name='sale_buyer')
     amount = models.DecimalField(max_digits=100,decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
 class Commission(models.Model):
     sale = models.ForeignKey(Sale,on_delete=models.SET_NULL,null=True,blank=True)
-    seller = models.ForeignKey(User,on_delete=models.CASCADE,related_name='seller')
-    buyer =  models.ForeignKey(User,on_delete=models.CASCADE,related_name='buyer')
+    seller = models.ForeignKey(User,on_delete=models.CASCADE,related_name='commission_seller')
+    buyer =  models.ForeignKey(User,on_delete=models.CASCADE,related_name='commission_buyer')
     amount = models.DecimalField(max_digits=100,decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -239,7 +238,7 @@ class WalletTransaction(models.Model):
 
 #------------------------------------------------------------old models--------------------------------------------------
 
-class CommissionConfiguration(models.Model):
+'''class CommissionConfiguration(models.Model):
     Company = models.ForeignKey(Company,on_delete=models.CASCADE,null=False,blank=False)
     level = models.IntegerField(null=False,blank=False)
     percentage = models.DecimalField(max_digits=3,decimal_places=2)
@@ -418,3 +417,5 @@ class SubscriptionPayment(models.Model):
     
     def __str__(self):
         return f"{self.subscription.company.name} - {self.amount} on {self.payment_date}"
+
+        '''

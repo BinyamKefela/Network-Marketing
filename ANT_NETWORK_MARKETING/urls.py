@@ -17,6 +17,31 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+
+from django.contrib import admin
+from django.urls import path
+from network_marketing.swagger import schema_view
+from django.urls import include
+
+
+from django.conf import settings
+from network_marketing.views import CustomTokenObtainPairView
+from rest_framework_simplejwt.views import (TokenObtainPairView,TokenRefreshView,TokenVerifyView)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('swagger/', schema_view.with_ui('swagger',cache_timeout=0), name='schema-swagger-ui'),
+    path('api/', include('network_marketing.urls')),
+
+
+    path('api/token',CustomTokenObtainPairView.as_view(),name='token_obtain_pair'),
+    path('api/token/refresh',TokenRefreshView.as_view(),name='token_refresh'),
+    path('api/token/verify/',TokenVerifyView.as_view(),name='token_verify'),
+   
+
+]
+

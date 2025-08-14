@@ -29,7 +29,7 @@ DEBUG = True
 CORS_ALLOW_ALL_ORIGINS = True
 
 
-ALLOWED_HOSTS = ['network-marketing.sunriseworld.org']
+ALLOWED_HOSTS = ['network-marketing.sunriseworld.org','localhost']
 
 
 # Application definition

@@ -125,35 +125,42 @@ class MlmSettingSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = MlmSetting
+        fields = "__all__"
 
 class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
+        fields = "__all__"
 
 class ProductSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Product
+        fields = "__all__"
 
 class CommissionConfigurationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CommissionConfiguration
+        fields = "__all__"
 
 class SaleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sale
+        fields = "__all__"
 
 class CommissionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Commission
+        fields = "__all__"
 
 class WalletTransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WalletTransaction
+        fields = "__all__"
 
 

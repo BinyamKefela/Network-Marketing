@@ -93,7 +93,7 @@ class UserSerializer(serializers.ModelSerializer):
         else:
             # Regular users: only show explicitly assigned permissions
             representation["user_permissions"] = list(instance.user_permissions.values_list("codename", flat=True))
-        representation['company'] = CompanySerializerForUser(instance.company).data
+        #representation['company'] = CompanySerializerForUser(instance.company).data
         #representation['subscriptions'] = SubscriptionSerializerForUser(Subscription.objects.filter(company=instance.company),many=True).data
         return representation
     
@@ -121,19 +121,39 @@ class PermissionSerializer(serializers.ModelSerializer):
         model = Permission
         fields = "__all__"
 
-
-class CompanySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Company
-        fields = "__all__"
-
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['owner'] = UserSerializer(instance.owner).data if instance.owner else None
-        return representation
+class MlmSettingSerializer(serializers.ModelSerializer):
     
-class CompanySerializerForUser(serializers.ModelSerializer):
     class Meta:
-        model = Company
-        fields = "__all__"
+        model = MlmSetting
+
+class CategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Category
+
+class ProductSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Product
+
+class CommissionConfigurationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CommissionConfiguration
+
+class SaleSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Sale
+
+class CommissionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Commission
+
+class WalletTransactionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = WalletTransaction
+
 

@@ -47,7 +47,7 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
 
-
+'''
 class Company(models.Model):
     name = models.CharField(max_length=100, unique=True)
     email = models.EmailField(max_length=200)
@@ -60,7 +60,7 @@ class Company(models.Model):
     
     def __str__(self):
         return self.name
-    
+'''    
 
 class User(AbstractBaseUser,PermissionsMixin):
     email = models.EmailField(unique=True)
@@ -168,10 +168,11 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200,unique=True)
     description = models.TextField(null=True,blank=True)
-    price = models.DecimalField(max_digits=100,decimal_places=2)
-    cost_price = models.DecimalField(max_digits=100,decimal_places=2)
+    quantity = models.DecimalField(decimal_places=10,max_digits=2)
+    price = models.DecimalField(max_digits=100,decimal_places=2,default=0)
+    cost = models.DecimalField(max_digits=100,decimal_places=2,null=True,blank=True)
     is_service = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -188,6 +189,7 @@ class Sale(models.Model):
     seller = models.ForeignKey(User,on_delete=models.CASCADE,related_name='sale_seller')
     buyer =  models.ForeignKey(User,on_delete=models.CASCADE,related_name='sale_buyer')
     amount = models.DecimalField(max_digits=100,decimal_places=2)
+    payment_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

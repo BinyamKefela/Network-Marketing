@@ -157,6 +157,7 @@ class CommissionSerializer(serializers.ModelSerializer):
         model = Commission
         fields = "__all__"
 
+
 class WalletTransactionSerializer(serializers.ModelSerializer):
 
     class Meta:

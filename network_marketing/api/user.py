@@ -17,7 +17,7 @@ from django.db.models import F, Value
 from django.db.models.functions import Concat
 import json
 from django.conf import settings
-from ..models import EmailResetCode,Company
+from ..models import EmailResetCode
 
 from rest_framework.permissions import AllowAny
 from django.core.mail import send_mail

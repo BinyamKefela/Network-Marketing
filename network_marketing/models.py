@@ -170,7 +170,7 @@ class Category(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=200,unique=True)
     description = models.TextField(null=True,blank=True)
-    quantity = models.DecimalField(decimal_places=10,max_digits=2)
+    quantity = models.DecimalField(decimal_places=2,max_digits=100)
     price = models.DecimalField(max_digits=100,decimal_places=2,default=0)
     cost = models.DecimalField(max_digits=100,decimal_places=2,null=True,blank=True)
     is_service = models.BooleanField(default=False)
@@ -189,7 +189,7 @@ class Sale(models.Model):
     seller = models.ForeignKey(User,on_delete=models.CASCADE,related_name='sale_seller')
     buyer =  models.ForeignKey(User,on_delete=models.CASCADE,related_name='sale_buyer')
     amount = models.DecimalField(max_digits=100,decimal_places=2)
-    payment_date = models.DateField()
+    payment_date = models.DateField(null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

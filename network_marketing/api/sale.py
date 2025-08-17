@@ -129,5 +129,9 @@ def post_sale(request):
     wallet_transaction_buyer.type = WalletTransaction.WALLET_TRANSACTION_CHOICES[1]
     wallet_transaction_buyer.save()
 
+    seller.wallet_balance = commission.amount
+    seller.save()
+
+
     return Response({"message":"successfully saved sales data!"},status=status.HTTP_201_CREATED)
     

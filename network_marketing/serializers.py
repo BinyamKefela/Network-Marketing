@@ -5,6 +5,7 @@ from rest_framework import serializers
 from .models import *
 from auditlog.models import LogEntry
 
+
 User = get_user_model()
 
 
@@ -51,7 +52,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['user'] = user.id
         data['groups'] = list(user.groups.values_list('name',flat=True))
         return data
-    
+
+
 class UserSerializer(serializers.ModelSerializer):
     profile_picture = serializers.SerializerMethodField()
     password = serializers.CharField(write_only=True, required=False)
@@ -106,7 +108,8 @@ class UserSerializer(serializers.ModelSerializer):
             from django.conf import settings
             return settings.SITE_URL + obj.profile_picture.url
         return None
-    
+
+
 class GroupSerializer(serializers.ModelSerializer):
     permissions = serializers.SlugRelatedField(slug_field="codename",queryset=Permission.objects.all(),many=True,required=False)
 
@@ -121,11 +124,13 @@ class PermissionSerializer(serializers.ModelSerializer):
         model = Permission
         fields = "__all__"
 
+
 class MlmSettingSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = MlmSetting
         fields = "__all__"
+
 
 class CategorySerializer(serializers.ModelSerializer):
 
@@ -133,11 +138,13 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = "__all__"
 
+
 class ProductSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Product
         fields = "__all__"
+
 
 class CommissionConfigurationSerializer(serializers.ModelSerializer):
 
@@ -145,11 +152,13 @@ class CommissionConfigurationSerializer(serializers.ModelSerializer):
         model = CommissionConfiguration
         fields = "__all__"
 
+
 class SaleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sale
         fields = "__all__"
+
 
 class CommissionSerializer(serializers.ModelSerializer):
 
@@ -163,5 +172,3 @@ class WalletTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = WalletTransaction
         fields = "__all__"
-
-

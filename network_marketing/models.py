@@ -76,7 +76,9 @@ class User(AbstractBaseUser,PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     #company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
     #is_company_admin = models.BooleanField(default=False)
+    referal_code = models.CharField(max_length=10,null=True,blank=True)
     wallet_balance = models.DecimalField(max_digits=1000,decimal_places=2,default=0)
+    level = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -127,8 +129,6 @@ class User(AbstractBaseUser,PermissionsMixin):
         return super().save(*args, **kwargs)
 
     
-
-
 auditlog.register(User)
 
 
@@ -152,13 +152,14 @@ class EmailResetCode(models.Model):
     def is_expired(self):
         return timezone.now() > self.created_at + timedelta(minutes=10)
 
+
 class MlmSetting(models.Model):
     max_level = models.IntegerField()
     min_withdrawal_amount = models.DecimalField(max_digits=1000,decimal_places=2)
-    payout_frequency = models.IntegerField()
+    payout_frequency = models.IntegerField(null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
 
 class Category(models.Model):
     name = models.CharField(max_length=100,unique=True)
@@ -169,6 +170,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=200,unique=True)
+    category = models.ForeignKey(Category,on_delete=models.CASCADE)
     description = models.TextField(null=True,blank=True)
     quantity = models.DecimalField(decimal_places=2,max_digits=100)
     price = models.DecimalField(max_digits=100,decimal_places=2,default=0)
@@ -177,26 +179,39 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        unique_together = ('name','category')
+
 
 class CommissionConfiguration(models.Model):
     level = models.IntegerField()
+    category = models.ForeignKey(Category,on_delete=models.CASCADE)
     percentage = models.DecimalField(max_digits=3,decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        unique_together = ('level','category')
+
+
 class Sale(models.Model):
+    SALE_STATUS = [('commision recorded','commision recorded'),('not recorded','not recorded')]
     product = models.ForeignKey(Product,on_delete=models.SET_NULL,null=True,blank=True)
     seller = models.ForeignKey(User,on_delete=models.CASCADE,related_name='sale_seller')
     buyer =  models.ForeignKey(User,on_delete=models.CASCADE,related_name='sale_buyer')
-    amount = models.DecimalField(max_digits=100,decimal_places=2)
+    quantity = models.DecimalField(max_digits=100,decimal_places=2) 
+    price = models.DecimalField(max_digits=100,decimal_places=2)
+    sub_total = models.DecimalField(max_digits=100,decimal_places=2)
     payment_date = models.DateField(null=True,blank=True)
+    status = models.CharField(max_length=100,choices=SALE_STATUS) 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
+
 class Commission(models.Model):
     sale = models.ForeignKey(Sale,on_delete=models.SET_NULL,null=True,blank=True)
-    seller = models.ForeignKey(User,on_delete=models.CASCADE,related_name='commission_seller')
-    buyer =  models.ForeignKey(User,on_delete=models.CASCADE,related_name='commission_buyer')
+    #seller = models.ForeignKey(User,on_delete=models.CASCADE,related_name='commission_seller')
+    #buyer =  models.ForeignKey(User,on_delete=models.CASCADE,related_name='commission_buyer')
     amount = models.DecimalField(max_digits=100,decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -292,7 +292,6 @@ def send_password_reset_email_phone(request):
     return Response({"message":"password reset code was sent to your email successfully"},status=status.HTTP_200_OK)
 
 
-
 class VerifyResetCodeView(APIView):
     def post(self, request):
         email = request.data.get("email")
@@ -418,7 +417,16 @@ def update_user(request,id):
 @permission_classes([AllowAny])
 def sign_up(request):
         if User.objects.filter(email=request.data.get("email")).count()>0:
-            return Response({"error":"This email already exists in the system"},status=status.HTTP_403_FORBIDDEN)
+            return Response({"error":"This email already exists in the system"},status=status.HTTP_400_BAD_REQUEST)
+        if User.objects.filter(phone=request.data.get("phone")).count()>0:
+            return Response({"error":"This phone number already exists in the system"},status=status.HTTP_400_BAD_REQUEST)
+        
+        if request.data.get('referal_code'):
+            try:
+                refer_user = User.objects.get(referal_code=request.data.get('referal_code'))
+            except:
+                return Response({"error":"there is no seller user witht the given referal code"},status=status.HTTP_400_BAD_REQUEST)
+
         serializer = UserSerializer(data=request.data)
     #if serializer.is_valid():
         #if the user already signed up but didn't verify his account, delete verfication UUID's
@@ -431,6 +439,12 @@ def sign_up(request):
             if User.objects.filter(email=request.data.get("email")).count() > 0:
                 return Response({"error":"This email already exists in the system"},status=status.HTTP_403_FORBIDDEN)
             user = User()
+
+            if request.data.get('referal_code'):
+                user.referal_code = str(request.data.get('email'))+str("rfrc")
+                user.level = refer_user.level+1
+
+
             user.email = request.data.get("email")
             user.is_active=False
             user.set_password(request.data.get("password"))
@@ -463,6 +477,4 @@ def verify_email(request, token):
         else:
             return Response({'message': 'Your email has already been verified.'}, status=status.HTTP_200_OK)
     except EmailVerification.DoesNotExist:
-        return Response({'error': 'Invalid verification link.'}, status=status.HTTP_400_BAD_REQUEST)
-    
-
+        return Response({'error': 'Invalid verification link.'}, status=status.HTTP_400_BAD_REQUEST)    

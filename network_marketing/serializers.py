@@ -172,3 +172,15 @@ class WalletTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = WalletTransaction
         fields = "__all__"
+
+class ProductImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductImage
+        fields = "__all__"
+
+class HousingSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Housing
+        fields = "__all__"

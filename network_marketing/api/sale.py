@@ -92,10 +92,6 @@ def post_sale(request):
     except:
         return Response({"error":"There is no user with the given buyer id"})
     
-    try:
-        commission_configuration = CommissionConfiguration.objects.get(level = seller.level,category=product.category)
-    except:
-        return Response({"error":"There is no commssion configuration for the given sellers level and product category"})
     sale = Sale()
     sale.product = product
     sale.seller = seller
@@ -107,31 +103,52 @@ def post_sale(request):
     sale.status = Sale.SALE_STATUS[0]
     sale.save()
 
-    commission = Commission()
-    commission.sale = sale
-    commission.amount = commission_configuration.percentage*sale.sub_total
-    commission.save()
-
-    mlm_settng = MlmSetting.objects.all().first()
-
-    if mlm_settng.max_level>=buyer.level:
-
-       wallet_transaction_seller = WalletTransaction()
-       wallet_transaction_seller.user = seller
-       wallet_transaction_seller.amount = commission.amount
-       wallet_transaction_seller.type = WalletTransaction.WALLET_TRANSACTION_CHOICES[0]
-       wallet_transaction_seller.reference = commission
-       wallet_transaction_seller.save()
-
-    wallet_transaction_buyer = WalletTransaction()
-    wallet_transaction_buyer.user = buyer
-    wallet_transaction_buyer.amount = sale.sub_total
-    wallet_transaction_buyer.type = WalletTransaction.WALLET_TRANSACTION_CHOICES[1]
-    wallet_transaction_buyer.save()
-
-    seller.wallet_balance = commission.amount
-    seller.save()
+    i=seller.level
+    mlm_setting = MlmSetting.objects.all().first()
+    j = mlm_setting.max_level
+    while i>0 and j>0 :
 
 
+        try:
+            commission_configuration = CommissionConfiguration.objects.get(level = i,category=product.category)
+        except:
+            return Response({"error":"There is no commssion configuration for the given sellers level and product category"})
+        
+    
+        #create commission from the sale for the seller 
+        commission = Commission()
+        commission.sale = sale
+        commission.amount = commission_configuration.percentage*sale.sub_total
+        commission.save()
+    
+        #mlm_settng = MlmSetting.objects.all().first()
+    
+        #if mlm_settng.max_level>=buyer.level:
+        
+        try:
+            commisioned_user = User.objects.filter(referal_code=buyer.referal_code).first()
+            if j != mlm_setting.max_level:
+               commissioned_user = User.objects.filter(referal_code = commisioned_user.referal_code).first()
+        except:
+            return Response({"error":"there is no seller with the given referal code"})
+        wallet_transaction_seller = WalletTransaction()
+        wallet_transaction_seller.user = commisioned_user
+        wallet_transaction_seller.amount = commission.amount
+        wallet_transaction_seller.type = WalletTransaction.WALLET_TRANSACTION_CHOICES[0]
+        wallet_transaction_seller.reference = commission
+        wallet_transaction_seller.save()
+
+        if j == mlm_setting.max_level:
+           wallet_transaction_buyer = WalletTransaction()
+           wallet_transaction_buyer.user = buyer
+           wallet_transaction_buyer.amount = sale.sub_total
+           wallet_transaction_buyer.type = WalletTransaction.WALLET_TRANSACTION_CHOICES[1]
+           wallet_transaction_buyer.save()
+    
+        seller.wallet_balance = commission.amount
+        seller.save()
+        j = j-1
+    
+    
     return Response({"message":"successfully saved sales data!"},status=status.HTTP_201_CREATED)
     

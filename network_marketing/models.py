@@ -76,7 +76,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     #company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
     #is_company_admin = models.BooleanField(default=False)
-    referal_code = models.CharField(max_length=10,null=True,blank=True)
+    referal_code = models.CharField(max_length=10,null=True,blank=True,unique=True)
     wallet_balance = models.DecimalField(max_digits=1000,decimal_places=2,default=0)
     level = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -183,6 +183,20 @@ class Product(models.Model):
         unique_together = ('name','category')
 
 
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,null=False,blank=False)
+    image = models.ImageField(upload_to="properties")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Housing(models.Model):
+    code = models.CharField(max_length=200)
+    location = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
 class CommissionConfiguration(models.Model):
     level = models.IntegerField()
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
@@ -224,8 +238,7 @@ class WalletTransaction(models.Model):
     type = models.CharField(max_length=100,choices=WALLET_TRANSACTION_CHOICES)
     reference = models.ForeignKey(Commission,on_delete=models.SET_NULL,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
+    updated_at = models.DateTimeField(auto_now=True)    
 
 
 

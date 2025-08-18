@@ -12,6 +12,8 @@ from .api.product import *
 from .api.sale import *
 from .api.commision import *
 from .api.wallet_transaction import *
+from .api.product_image import *
+from .api.housing import *
 
 urlpatterns = [
 
@@ -86,6 +88,15 @@ path("update_product/<int:id>", ProductUpdateView.as_view(), name="update_produc
 path("delete_product/<int:id>", ProductDestroyView.as_view(), name="delete_product"),
 
 
+#---------------------------------ProductImage routes------------------------------------------
+path("get_product_images", ProductImageListView.as_view(), name="get_product_images"),
+path("get_product_image/<int:id>", ProductImageRetrieveView.as_view(), name="get_product_image"),
+path("post_product_image", ProductImageCreateView.as_view(), name="post_product_image"),
+path("update_product_image/<int:id>", ProductImageUpdateView.as_view(), name="update_product_image"),
+path("delete_product_image/<int:id>", ProductImageDestroyView.as_view(), name="delete_product_image"),
+
+
+
 #---------------------------------Commission Configuration routes------------------------------------------
 path("get_commission_configurations", CommissionConfigurationListView.as_view(), name="get_commission_configurations"),
 path("get_commission_configuration/<int:id>", CommissionConfigurationRetrieveView.as_view(), name="get_commission_configuration"),
@@ -113,6 +124,14 @@ path("get_wallet_transaction/<int:id>", WalletTransactionRetrieveView.as_view(),
 path("post_wallet_transaction", WalletTransactionCreateView.as_view(), name="post_wallet_transaction"),
 path("update_wallet_transaction/<int:id>", WalletTransactionUpdateView.as_view(), name="update_wallet_transaction"),
 path("delete_wallet_transaction/<int:id>", WalletTransactionDestroyView.as_view(), name="delete_wallet_transaction"),
+
+
+#---------------------------------Housing routes------------------------------------------
+path("get_housings", HousingListView.as_view(), name="get_housings"),
+path("get_housing/<int:id>", HousingRetrieveView.as_view(), name="get_housing"),
+path("post_housing", HousingCreateView.as_view(), name="post_housing"),
+path("update_housing/<int:id>", HousingUpdateView.as_view(), name="update_housing"),
+path("delete_housing/<int:id>", HousingDestroyView.as_view(), name="delete_housing"),
 
 
 

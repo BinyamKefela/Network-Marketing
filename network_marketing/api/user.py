@@ -445,12 +445,19 @@ def sign_up(request):
             if request.data.get('referal_code'):
                 user.referal_code = str(request.data.get('email'))+str("rfrc")
                 user.level = refer_user.level+1
+                
 
 
             user.email = request.data.get("email")
             user.is_active=False
             user.set_password(request.data.get("password"))
             user.save()
+            if request.data.get('referal_code'):
+                from ..models import PromoterBuyer
+                promoter_buyer = PromoterBuyer()
+                promoter_buyer.promoter = refer_user
+                promoter_buyer.buyer = user
+                promoter_buyer.save()
             #if serializer.is_valid():
             #    user = serializer.save(is_active=False)  # Initially set user as inactive
             verification = EmailVerification.objects.create(user=user)

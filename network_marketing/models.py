@@ -131,6 +131,15 @@ class User(AbstractBaseUser,PermissionsMixin):
     
 auditlog.register(User)
 
+class PromoterBuyer(models.Model):
+    promoter = models.ForeignKey(User,on_delete=models.CASCADE,related_name='promoter_user')
+    buyer = models.ForeignKey(User,on_delete=models.CASCADE,related_name='buyer_user')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('promoter','buyer')
+
 
 class EmailVerification(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

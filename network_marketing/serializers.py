@@ -184,3 +184,9 @@ class HousingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Housing
         fields = "__all__"
+
+class PromoterBuyerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PromoterBuyer
+        fields = "__all__"

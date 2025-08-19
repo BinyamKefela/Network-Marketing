@@ -14,6 +14,7 @@ from .api.commision import *
 from .api.wallet_transaction import *
 from .api.product_image import *
 from .api.housing import *
+from .api.promoter_buyer import *
 
 urlpatterns = [
 
@@ -132,6 +133,14 @@ path("get_housing/<int:id>", HousingRetrieveView.as_view(), name="get_housing"),
 path("post_housing", HousingCreateView.as_view(), name="post_housing"),
 path("update_housing/<int:id>", HousingUpdateView.as_view(), name="update_housing"),
 path("delete_housing/<int:id>", HousingDestroyView.as_view(), name="delete_housing"),
+
+#---------------------------------PromoterBuyer routes------------------------------------------
+path("get_promoter_buyers", PromoterBuyerListView.as_view(), name="get_promoter_buyers"),
+path("get_promoter_buyer/<int:id>", PromoterBuyerRetrieveView.as_view(), name="get_promoter_buyer"),
+path("post_promoter_buyer", PromoterBuyerCreateView.as_view(), name="post_promoter_buyer"),
+path("update_promoter_buyer/<int:id>", PromoterBuyerUpdateView.as_view(), name="update_promoter_buyer"),
+path("delete_promoter_buyer/<int:id>", PromoterBuyerDestroyView.as_view(), name="delete_promoter_buyer"),
+
 
 
 

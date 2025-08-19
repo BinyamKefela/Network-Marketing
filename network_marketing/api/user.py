@@ -441,6 +441,7 @@ def sign_up(request):
             if User.objects.filter(email=request.data.get("email")).count() > 0:
                 return Response({"error":"This email already exists in the system"},status=status.HTTP_403_FORBIDDEN)
             user = User()
+            user.level = 0
 
             if request.data.get('referal_code'):
                 user.referal_code = str(request.data.get('email'))+str("rfrc")

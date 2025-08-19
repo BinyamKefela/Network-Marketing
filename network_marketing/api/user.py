@@ -92,8 +92,8 @@ class UserListView(generics.ListAPIView):
     filterset_fields = {
     #'name': ['exact', 'icontains'],
     #'name':['exact','icontains'],
-    'company__name': ['exact'],
-    'is_company_admin':['exact'],
+    'first_name': ['exact'],
+    #'is_company_admin':['exact'],
     }
 
     ordering_fields = [field.name for field in User._meta.fields]

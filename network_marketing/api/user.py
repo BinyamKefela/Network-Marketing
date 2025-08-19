@@ -416,6 +416,8 @@ def update_user(request,id):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def sign_up(request):
+        if not (request.data.get('email') and request.data.get('phone_number') and request.data.get('password')):
+            return Response({"error":"please make sure you send email, phone number and password"})
         if User.objects.filter(email=request.data.get("email")).count()>0:
             return Response({"error":"This email already exists in the system"},status=status.HTTP_400_BAD_REQUEST)
         if User.objects.filter(phone_number=request.data.get("phone_number")).count()>0:

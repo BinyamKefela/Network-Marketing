@@ -443,8 +443,9 @@ def sign_up(request):
             user = User()
             user.level = 0
 
+            user.referal_code = str(request.data.get('email'))+str("rfrc")
             if request.data.get('referal_code'):
-                user.referal_code = str(request.data.get('email'))+str("rfrc")
+                
                 user.level = refer_user.level+1
                 
 

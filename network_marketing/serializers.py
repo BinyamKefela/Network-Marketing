@@ -51,6 +51,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['email'] = user.email
         data['user'] = user.id
         data['groups'] = list(user.groups.values_list('name',flat=True))
+        data['referal_code'] = user.referal_code
         return data
 
 

@@ -427,7 +427,7 @@ def sign_up(request):
             try:
                 refer_user = User.objects.get(referal_code=request.data.get('referal_code'))
             except:
-                return Response({"error":"there is no seller user witht the given referal code"},status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error":"there is no seller user with the given referal code"},status=status.HTTP_400_BAD_REQUEST)
 
         serializer = UserSerializer(data=request.data)
     #if serializer.is_valid():

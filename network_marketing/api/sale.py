@@ -145,7 +145,7 @@ def post_sale(request):
            wallet_transaction_buyer.type = WalletTransaction.WALLET_TRANSACTION_CHOICES[1]
            wallet_transaction_buyer.save()
     
-        seller.wallet_balance = commission.amount
+        seller.wallet_balance += commission.amount
         seller.save()
         j = j-1
     

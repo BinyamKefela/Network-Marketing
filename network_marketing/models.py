@@ -191,6 +191,55 @@ class Product(models.Model):
     class Meta:
         unique_together = ('name','category')
 
+class Training(models.Model):
+    name = models.CharField(max_length=300,unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Package(models.Model):
+    PACKAGE_TYPE_CHOICES = [('product','product'),('service','service')]
+    name = models.CharField(max_length=300,unique=True)
+    package_type = models.CharField(max_length=100,choices=PACKAGE_TYPE_CHOICES)
+    price = models.DecimalField(max_digits=20,decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class ProductPackage(models.Model):
+    product = models.ForeignKey(Product,on_delete=models.SET_NULL,null=True,blank=True)
+    package = models.ForeignKey(Package,on_delete=models.SET_NULL,null=True,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('product','package')
+
+
+class TrainingPackage(models.Model):
+    training = models.ForeignKey(Training,on_delete=models.SET_NULL,null=True,blank=True)
+    package = models.ForeignKey(Package,on_delete=models.SET_NULL,null=True,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        uniue_together = ('training','package')
+
+
+class Configuration(models.Model):
+    investment_amount = models.DecimalField(max_digits=20,decimal_places=2)
+    housing_or_car_investment = models.DecimalField(max_digits=20,decimal_places=2)
+    sacco = models.DecimalField(max_digits=20,decimal_places=2)
+    company_revenue_product_percentage = models.DecimalField(max_digits=3,decimal_places=2)
+    product_disrtribution_reward_percentage = models.DecimalField(max_digits=20,decimal_places=2)
+    company_revenue_training_percentage = models.DecimalField(max_digits=20,decimal_places=2)
+    training_distribution_reward_percentage = models.DecimalField(max_digits=20,decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+
+
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE,null=False,blank=False)

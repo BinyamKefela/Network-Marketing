@@ -222,7 +222,7 @@ class TrainingPackage(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        uniue_together = ('training','package')
+        unique_together = ('training','package')
 
 
 class Configuration(models.Model):

@@ -191,3 +191,38 @@ class PromoterBuyerSerializer(serializers.ModelSerializer):
     class Meta:
         model = PromoterBuyer
         fields = "__all__"
+
+
+class PackageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Package
+        fields = "__all__"
+
+class TrainingSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Training
+        fields = "__all__"
+
+class ProductPackageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductPackage
+        fields = "__all__"
+
+class TrainingPackageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TrainingPackage
+        fields = "__all__"
+
+
+class ConfigurationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Configuration
+        fields = "__all__"
+
+
+

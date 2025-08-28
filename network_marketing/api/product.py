@@ -35,7 +35,7 @@ class ProductListView(generics.ListAPIView):
     'name':['exact'],
     'price': ['exact','gt', 'gte', 'lt', 'lte'],
     'quantity':['exact','gt', 'gte', 'lt', 'lte'],
-    'cost_price': ['exact','gt', 'gte', 'lt', 'lte'],
+    'cost': ['exact','gt', 'gte', 'lt', 'lte'],
     'is_service': ['exact']
     }
 

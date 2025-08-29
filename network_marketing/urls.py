@@ -15,6 +15,11 @@ from .api.wallet_transaction import *
 from .api.product_image import *
 from .api.housing import *
 from .api.promoter_buyer import *
+from .api.training import *
+from .api.package import *
+from .api.product_package import *
+from .api.training_package import *
+from .api.configuration import *
 
 urlpatterns = [
 
@@ -142,6 +147,44 @@ path("update_promoter_buyer/<int:id>", PromoterBuyerUpdateView.as_view(), name="
 path("delete_promoter_buyer/<int:id>", PromoterBuyerDestroyView.as_view(), name="delete_promoter_buyer"),
 
 
+#---------------------------------Training routes------------------------------------------
+path("get_trainings", TrainingListView.as_view(), name="get_trainings"),
+path("get_training/<int:id>", TrainingRetrieveView.as_view(), name="get_training"),
+path("post_training", TrainingCreateView.as_view(), name="post_training"),
+path("update_training/<int:id>", TrainingUpdateView.as_view(), name="update_training"),
+path("delete_training/<int:id>", TrainingDestroyView.as_view(), name="delete_training"),
+
+
+#---------------------------------package routes------------------------------------------
+path("get_packages", PackageListView.as_view(), name="get_packages"),
+path("get_package/<int:id>", PackageRetrieveView.as_view(), name="get_package"),
+path("post_package", PackageCreateView.as_view(), name="post_package"),
+path("update_package/<int:id>", PackageUpdateView.as_view(), name="update_package"),
+path("delete_package/<int:id>", PackageDestroyView.as_view(), name="delete_package"),
+
+
+#---------------------------------product_package routes------------------------------------------
+path("get_product_packages", ProductPackageListView.as_view(), name="get_product_packages"),
+path("get_product_package/<int:id>", ProductPackageRetrieveView.as_view(), name="get_product_package"),
+path("post_product_package", ProductPackageCreateView.as_view(), name="post_product_package"),
+path("update_product_package/<int:id>", ProductPackageUpdateView.as_view(), name="update_product_package"),
+path("delete_product_package/<int:id>", ProductPackageDestroyView.as_view(), name="delete_product_package"),
+
+
+#---------------------------------training_package routes------------------------------------------
+path("get_training_packages", TrainingPackageListView.as_view(), name="get_training_packages"),
+path("get_training_package/<int:id>", TrainingPackageRetrieveView.as_view(), name="get_training_package"),
+path("post_training_package", TrainingPackageCreateView.as_view(), name="post_training_package"),
+path("update_training_package/<int:id>", TrainingPackageUpdateView.as_view(), name="update_training_package"),
+path("delete_training_package/<int:id>", TrainingPackageDestroyView.as_view(), name="delete_training_package"),
+
+
+#---------------------------------configuration routes------------------------------------------
+path("get_configurations", ConfigurationListView.as_view(), name="get_configurations"),
+path("get_configuration/<int:id>", ConfigurationRetrieveView.as_view(), name="get_configuration"),
+path("post_configuration", ConfigurationCreateView.as_view(), name="post_configuration"),
+path("update_configuration/<int:id>", ConfigurationUpdateView.as_view(), name="update_configuration"),
+path("delete_configuration/<int:id>", ConfigurationDestroyView.as_view(), name="delete_configuration"),
 
 
 ]

@@ -25,14 +25,14 @@ class ConfigurationListView(generics.ListAPIView):
     queryset = Configuration.objects.all()
     permission_classes = [IsAuthenticated, DjangoModelPermissions]
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
-    search_fields = ['name','description']
+    search_fields = [field.name for field in Configuration._meta.fields if not isinstance(field, ForeignKey)]
     ordering_fields = [field.name for field in Configuration._meta.fields if not isinstance(field, ForeignKey)]
     pagination_class = CustomPagination
     serializer_class = ConfigurationSerializer
     ordering = ['id']
     filterset_fields = {
     #'name': ['exact', 'icontains'],
-    'name':['exact'],
+    'investment_amount':['exact'],
     
     }
 

@@ -25,7 +25,7 @@ class PackageListView(generics.ListAPIView):
     queryset = Package.objects.all()
     permission_classes = [IsAuthenticated, DjangoModelPermissions]
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
-    search_fields = ['name','description']
+    search_fields = [field.name for field in Package._meta.fields if not isinstance(field, ForeignKey)]
     ordering_fields = [field.name for field in Package._meta.fields if not isinstance(field, ForeignKey)]
     pagination_class = CustomPagination
     serializer_class = PackageSerializer

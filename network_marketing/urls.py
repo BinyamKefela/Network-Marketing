@@ -20,6 +20,7 @@ from .api.package import *
 from .api.product_package import *
 from .api.training_package import *
 from .api.configuration import *
+from .api.unilevel_configuration import *
 
 urlpatterns = [
 
@@ -185,6 +186,14 @@ path("get_configuration/<int:id>", ConfigurationRetrieveView.as_view(), name="ge
 path("post_configuration", ConfigurationCreateView.as_view(), name="post_configuration"),
 path("update_configuration/<int:id>", ConfigurationUpdateView.as_view(), name="update_configuration"),
 path("delete_configuration/<int:id>", ConfigurationDestroyView.as_view(), name="delete_configuration"),
+
+
+#---------------------------------configuration routes------------------------------------------
+path("get_unilevel_configurations", UnilevelConfigurationListView.as_view(), name="get_unilevel_configurations"),
+path("get_unilevel_configuration/<int:id>", UnilevelConfigurationRetrieveView.as_view(), name="get_unilevel_configuration"),
+path("post_unilevel_configuration", UnilevelConfigurationCreateView.as_view(), name="post_unilevel_configuration"),
+path("update_unilevel_configuration/<int:id>", UnilevelConfigurationUpdateView.as_view(), name="update_unilevel_configuration"),
+path("delete_unilevel_configuration/<int:id>", UnilevelConfigurationDestroyView.as_view(), name="delete_unilevel_configuration"),
 
 
 ]

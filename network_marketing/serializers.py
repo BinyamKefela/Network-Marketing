@@ -224,5 +224,9 @@ class ConfigurationSerializer(serializers.ModelSerializer):
         model = Configuration
         fields = "__all__"
 
+class UnilevelConfigurationSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = UnilevelConfiguration
+        fields = "__all__"
 

@@ -193,6 +193,8 @@ class Product(models.Model):
 
 class Training(models.Model):
     name = models.CharField(max_length=300,unique=True)
+    price = models.DecimalField(max_digits=100,decimal_places=2)
+    cost = models.DecimalField(max_digits=100,decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -233,6 +235,7 @@ class Configuration(models.Model):
     product_disrtribution_reward_percentage = models.DecimalField(max_digits=20,decimal_places=2)
     company_revenue_training_percentage = models.DecimalField(max_digits=20,decimal_places=2)
     training_distribution_reward_percentage = models.DecimalField(max_digits=20,decimal_places=2)
+    service_charge = models.DecimalField(max_digits=100,decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -255,7 +258,7 @@ class Housing(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-class CommissionConfiguration(models.Model):
+class UnilevelConfiguration(models.Model):
     level = models.IntegerField()
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
     percentage = models.DecimalField(max_digits=3,decimal_places=2)
@@ -264,6 +267,20 @@ class CommissionConfiguration(models.Model):
 
     class Meta:
         unique_together = ('level','category')
+
+
+class CommissionConfiguration(models.Model):
+    direct_bonus = models.DecimalField(max_digits=100,decimal_places=2)
+    indirect_bonus = models.DecimalField(max_digits=100,decimal_places=2)
+    rank_achievement = models.DecimalField(max_digits=100,decimal_places=2)
+    unilevel_bonus = models.DecimalField(max_digits=100,decimal_places=2)
+    loyality_bonus = models.DecimalField(max_digits=100,decimal_places=2)
+    fast_track_bonus = models.DecimalField(max_digits=100,decimal_places=2)
+    display_bonus = models.DecimalField(max_digits=100,decimal_places=2)
+    incentive_bonus = models.DecimalField(max_digits=100,decimal_places=2)
+    profit_share_bonus = models.DecimalField(max_digits=100,decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Sale(models.Model):

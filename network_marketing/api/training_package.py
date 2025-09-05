@@ -32,7 +32,7 @@ class TrainingPackageListView(generics.ListAPIView):
     ordering = ['id']
     filterset_fields = {
     #'name': ['exact', 'icontains'],
-    'name':['exact'],
+    'package__id':['exact'],
     
     }
 

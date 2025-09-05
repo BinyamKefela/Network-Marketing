@@ -170,7 +170,7 @@ path("get_product_package/<int:id>", ProductPackageRetrieveView.as_view(), name=
 path("post_product_package", ProductPackageCreateView.as_view(), name="post_product_package"),
 path("update_product_package/<int:id>", ProductPackageUpdateView.as_view(), name="update_product_package"),
 path("delete_product_package/<int:id>", ProductPackageDestroyView.as_view(), name="delete_product_package"),
-path("add-products-to-package/", add_products_to_package, name="add-products-to-package"),
+path("add-products-to-package", add_products_to_package, name="add-products-to-package"),
 
 
 

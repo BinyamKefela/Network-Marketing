@@ -34,7 +34,7 @@ class ProductPackageListView(generics.ListAPIView):
     ordering = ['id']
     filterset_fields = {
     #'name': ['exact', 'icontains'],
-    'name':['exact'],
+    'package__id':['exact'],
     
     }
 
@@ -73,7 +73,7 @@ from rest_framework import status
 from ..models import ProductPackage, Product, Package
 
 @api_view(["POST"])
-@permission_classes([DjangoModelPermissions])
+@permission_classes([IsAuthenticated])
 def add_products_to_package(request):
     """
     Accepts a list of product IDs and a package ID,
@@ -84,6 +84,8 @@ def add_products_to_package(request):
         "product_ids": [2, 3, 4]
     }
     """
+    if not request.user.has_perm('network_marketing.add_productpackage'):
+        return Response({"detail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
     package_id = request.data.get("package_id")
     product_ids = request.data.get("product_ids", [])
 

@@ -103,6 +103,8 @@ def add_products_to_package(request):
     created = []
     skipped = []
 
+    ProductPackage.objects.filter(package=package).delete()
+
     # Use transaction so either all succeed or none
     with transaction.atomic():
         for product_id in product_ids:

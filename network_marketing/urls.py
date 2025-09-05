@@ -180,6 +180,7 @@ path("get_training_package/<int:id>", TrainingPackageRetrieveView.as_view(), nam
 path("post_training_package", TrainingPackageCreateView.as_view(), name="post_training_package"),
 path("update_training_package/<int:id>", TrainingPackageUpdateView.as_view(), name="update_training_package"),
 path("delete_training_package/<int:id>", TrainingPackageDestroyView.as_view(), name="delete_training_package"),
+path("add-trainings-to-package", add_trainings_to_package, name="add-trainings-to-package"),
 
 
 #---------------------------------configuration routes------------------------------------------

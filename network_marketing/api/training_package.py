@@ -61,4 +61,53 @@ class TrainingPackageCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated,DjangoModelPermissions]
 
 
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def add_trainings_to_package(request):
+    """
+    Accepts a list of training IDs and a package ID,
+    and associates the trainings with the package.
+    Expects JSON payload like:
+    {
+        "package_id": 1,
+        "training_ids": [2, 3, 4]
+    }
+    """
+    if not request.user.has_perm('network_marketing.add_training_package'):
+        return Response({"detail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+    package_id = request.data.get("package_id")
+    training_ids = request.data.get("training_ids", [])
+
+    try:
+        package = TrainingPackage.objects.get(id=package_id)
+    except TrainingPackage.DoesNotExist:
+        return Response({"detail": "Package not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    created = []
+    skipped = []
+
+    # Use transaction so either all succeed or none
+    with transaction.atomic():
+        for training_id in training_ids:
+            try:
+                training = TrainingPackage.objects.get(id=training_id)
+            except TrainingPackage.DoesNotExist:
+                skipped.append({"training_id": training_id, "reason": "Training not found"})
+                continue
+
+            obj, was_created = TrainingPackage.objects.get_or_create(
+                package=package,
+                training=training
+            )
+            if was_created:
+                created.append(training_id)
+            else:
+                skipped.append({"training_id": training_id, "reason": "Already associated"})
+
+    return Response({
+        "created": created,
+        "skipped": skipped
+    }, status=status.HTTP_200_OK)
+
+
   

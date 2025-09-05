@@ -32,7 +32,7 @@ class ProductImageListView(generics.ListAPIView):
     ordering = ['id']
     filterset_fields = {
     #'name': ['exact', 'icontains'],
-    'name':['exact'],
+    'product__id':['exact'],
     
     }
 

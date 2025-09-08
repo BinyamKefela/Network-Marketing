@@ -61,6 +61,10 @@ class Company(models.Model):
     def __str__(self):
         return self.name
 '''    
+class TreeSetting(models.Model):
+    max_children = models.IntegerField(default=3)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 class User(AbstractBaseUser,PermissionsMixin):
     email = models.EmailField(unique=True)
@@ -79,6 +83,8 @@ class User(AbstractBaseUser,PermissionsMixin):
     referal_code = models.CharField(max_length=10,null=True,blank=True,unique=True)
     wallet_balance = models.DecimalField(max_digits=1000,decimal_places=2,default=0)
     level = models.IntegerField()
+    recruited_by = models.ForeignKey('self',on_delete=models.SET_NULL,null=True,blank=True,related_name='recruited_by_user')
+    position_in_tree = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -291,6 +297,7 @@ class CommissionConfiguration(models.Model):
 class Sale(models.Model):
     SALE_STATUS = [('commision recorded','commision recorded'),('not recorded','not recorded')]
     product = models.ForeignKey(Product,on_delete=models.SET_NULL,null=True,blank=True)
+    package = models.ForeignKey(Package,on_delete=models.SET_NULL,null=True,blank=True)
     seller = models.ForeignKey(User,on_delete=models.CASCADE,related_name='sale_seller')
     buyer =  models.ForeignKey(User,on_delete=models.CASCADE,related_name='sale_buyer')
     quantity = models.DecimalField(max_digits=100,decimal_places=2) 

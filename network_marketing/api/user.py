@@ -460,6 +460,8 @@ def sign_up(request):
                 promoter_buyer.promoter = refer_user
                 promoter_buyer.buyer = user
                 promoter_buyer.save()
+                user.recruited_by = refer_user
+                user.save()
             #if serializer.is_valid():
             #    user = serializer.save(is_active=False)  # Initially set user as inactive
             verification = EmailVerification.objects.create(user=user)

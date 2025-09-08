@@ -74,37 +74,51 @@ def post_sale(request):
     payment_date = request.data.get('payment_date')
     product = request.data.get('product')
     quantity = request.data.get('quantity')
+    package = request.data.get('package')
     
 
-    if not (seller or buyer):
-        return Response({"error":"please make sure you sent seller, buyer, payment_date, product, and quantity"},status=status.HTTP_400_BAD_REQUEST)
+    if not (seller or buyer or payment_date or (product or package) or quantity):
+        return Response({"error":"please make sure you sent seller, buyer, payment_date, product, package, and quantity"},status=status.HTTP_400_BAD_REQUEST)
     
     try:
         seller = User.objects.get(id=seller)
         try:
             buyer = User.objects.get('buyer')
-            try:
-                product = Product.objects.get('product')
-            except:
-                return Response({"error":"there is no product with the given product id"})
+            if package:
+                try:
+                   package = Package.objects.get('package')
+                except:
+                   return Response({"error":"there is no package with the given package id"})
+            if product:
+                try:
+                   product = Product.objects.get('product')
+                except:
+                   return Response({"error":"there is no product with the given product id"})
         except:
-            return Response({"error":"there is no user with the given seller id"})
+            return Response({"error":"there is no user with the given buyer id"})
     except:
-        return Response({"error":"There is no user with the given buyer id"})
+        return Response({"error":"There is no user with the given seller id"})
     
     sale = Sale()
-    sale.product = product
+    if product:
+       sale.product = product
+       price = product.price
+    if package:
+       sale.package = package
+       price = package.price
     sale.seller = seller
     sale.buyer = buyer
     sale.quantity = quantity
-    sale.price = product.price
+    sale.price = price
     sale.sub_total = sale.quantity*sale.price
     sale.payment_date = payment_date
     sale.status = Sale.SALE_STATUS[0]
     sale.save()
 
+    #the level of the seller is taken
     i=seller.level
     mlm_setting = MlmSetting.objects.all().first()
+    # the max level commissions are calculated 
     j = mlm_setting.max_level
     while i>0 and j>0 :
 
@@ -152,3 +166,151 @@ def post_sale(request):
     
     return Response({"message":"successfully saved sales data!"},status=status.HTTP_201_CREATED)
     
+
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from django.db import transaction
+
+from ..models import (
+    User, Product, Package, Sale, Commission,
+    WalletTransaction, UnilevelConfiguration, MlmSetting, TreeSetting,
+)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def post_sale_new(request):
+    """
+    Handles a post-sale event, records the sale, and distributes commissions 
+    up the ternary tree hierarchy.
+    """
+    data = request.data
+    seller_id = data.get('seller')
+    buyer_id = data.get('buyer')
+    product_id = data.get('product')
+    package_id = data.get('package')
+    quantity = data.get('quantity')
+    
+    # 1. Input Validation and Data Retrieval
+    if not all([seller_id, buyer_id, quantity]):
+        return Response(
+            {"error": "Please provide seller, buyer, and quantity."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    if not (product_id or package_id):
+        return Response(
+            {"error": "Please provide either a product or a package."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        seller = User.objects.get(id=seller_id)
+        buyer = User.objects.get(id=buyer_id)
+        
+        # Determine the item and price based on product or package
+        item = None
+        category = None
+        if product_id:
+            item = Product.objects.get(id=product_id)
+            sale_price = item.price
+            category = item.category
+        elif package_id:
+            item = Package.objects.get(id=package_id)
+            sale_price = item.price
+            # For packages, you need a way to determine the category for commission
+            # configuration. This is a business logic decision. For this example,
+            # we'll assume packages are tied to a default category or specific logic.
+            # You might need to add a Category foreign key to the Package model.
+            category = None # Placeholder; you will need to define this logic
+        
+        total_price = sale_price * int(quantity)
+        
+        # Get MLM settings
+        mlm_settings = MlmSetting.objects.first()
+        if not mlm_settings:
+            return Response(
+                {"error": "MLM settings not configured."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    except User.DoesNotExist:
+        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+    except Product.DoesNotExist:
+        return Response({"error": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
+    except Package.DoesNotExist:
+        return Response({"error": "Package not found."}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Use a database transaction to ensure atomicity
+    with transaction.atomic():
+        # 2. Record the sale
+        sale = Sale.objects.create(
+            product=item if isinstance(item, Product) else None,
+            package=item if isinstance(item, Package) else None,
+            seller=seller,
+            buyer=buyer,
+            quantity=quantity,
+            price=sale_price,
+            sub_total=total_price,
+            payment_date=data.get('payment_date'),
+            status='commision recorded'
+        )
+
+        # 3. Distribute commissions up the hierarchy
+        current_upline_user = buyer.recruited_by
+        level = 1
+
+        while current_upline_user and level <= mlm_settings.max_level:
+            try:
+                # Find commission percentage for the current level and category
+                # This assumes a UnilevelConfiguration for a product's category.
+                # You'll need to adapt this for packages.
+                if category:
+                    config = UnilevelConfiguration.objects.get(level=level, category=category)
+                else:
+                    # Logic for handling package commissions goes here
+                    return Response({"error": "Package commission logic not implemented."}, status=status.HTTP_501_NOT_IMPLEMENTED)
+                
+                commission_amount = total_price * (config.percentage / 100)
+
+                # 4. Create a commission record
+                commission = Commission.objects.create(
+                    sale=sale,
+                    amount=commission_amount
+                )
+
+                # 5. Create a wallet transaction and update user's balance
+                WalletTransaction.objects.create(
+                    user=current_upline_user,
+                    amount=commission_amount,
+                    type='credit',
+                    reference=commission
+                )
+                
+                # Update user's wallet balance
+                current_upline_user.wallet_balance += commission_amount
+                current_upline_user.save()
+
+                # Move to the next level up the tree
+                current_upline_user = current_upline_user.recruited_by
+                level += 1
+            
+            except UnilevelConfiguration.DoesNotExist:
+                # Stop if no configuration is found for this level/category
+                break
+            except Exception as e:
+                # Rollback the transaction and return an error
+                transaction.set_rollback(True)
+                return Response(
+                    {"error": f"An error occurred during commission calculation: {str(e)}"},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+
+    return Response(
+        {"message": "Sale successfully recorded and commissions distributed."},
+        status=status.HTTP_201_CREATED
+    )

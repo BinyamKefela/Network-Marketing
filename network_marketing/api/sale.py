@@ -224,7 +224,7 @@ def post_sale_new(request):
             # configuration. This is a business logic decision. For this example,
             # we'll assume packages are tied to a default category or specific logic.
             # You might need to add a Category foreign key to the Package model.
-            category = None # Placeholder; you will need to define this logic
+            category = item.category # Placeholder; you will need to define this logic
         
         total_price = sale_price * int(quantity)
         

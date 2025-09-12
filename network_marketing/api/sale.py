@@ -168,16 +168,17 @@ def post_sale(request):
     
 
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
+
 from django.db import transaction
 
 from ..models import (
     User, Product, Package, Sale, Commission,
     WalletTransaction, UnilevelConfiguration, MlmSetting, TreeSetting,
 )
+
+
+
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -220,19 +221,22 @@ def post_sale_new(request):
         elif package_id:
             item = Package.objects.get(id=package_id)
             sale_price = item.price
-            # For packages, you need a way to determine the category for commission
-            # configuration. This is a business logic decision. For this example,
-            # we'll assume packages are tied to a default category or specific logic.
-            # You might need to add a Category foreign key to the Package model.
-            category = item.category # Placeholder; you will need to define this logic
+            category = item.category
         
         total_price = sale_price * int(quantity)
         
-        # Get MLM settings
+        # Get MLM settings and commission configuration
         mlm_settings = MlmSetting.objects.first()
+        commission_config = CommissionConfiguration.objects.first()
+        
         if not mlm_settings:
             return Response(
                 {"error": "MLM settings not configured."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        if not commission_config:
+            return Response(
+                {"error": "Commission configuration not found."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
@@ -244,6 +248,9 @@ def post_sale_new(request):
         return Response({"error": "Package not found."}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Calculate the total commission pool from the unilevel_bonus
+    total_commission_pool = total_price * (commission_config.unilevel_bonus / 100)
 
     # Use a database transaction to ensure atomicity
     with transaction.atomic():
@@ -267,15 +274,10 @@ def post_sale_new(request):
         while current_upline_user and level <= mlm_settings.max_level:
             try:
                 # Find commission percentage for the current level and category
-                # This assumes a UnilevelConfiguration for a product's category.
-                # You'll need to adapt this for packages.
-                if category:
-                    config = UnilevelConfiguration.objects.get(level=level, category=category)
-                else:
-                    # Logic for handling package commissions goes here
-                    return Response({"error": "Package commission logic not implemented."}, status=status.HTTP_501_NOT_IMPLEMENTED)
+                config = UnilevelConfiguration.objects.get(level=level, category=category)
                 
-                commission_amount = total_price * (config.percentage / 100)
+                # Calculate the individual commission from the total commission pool
+                commission_amount = total_commission_pool * (config.percentage / 100)
 
                 # 4. Create a commission record
                 commission = Commission.objects.create(

@@ -206,6 +206,8 @@ def post_sale_new(request):
             {"error": "Please provide either a product or a package."},
             status=status.HTTP_400_BAD_REQUEST
         )
+    if buyer_id == seller_id:
+        return Response({"error":"you seller and buyer cannot be the same"},status=status.HTTP_400_BAD_REQUEST)
     
     try:
         seller = User.objects.get(id=seller_id)

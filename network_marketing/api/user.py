@@ -435,8 +435,7 @@ def sign_up(request):
                     return Response({"error":"there is no user with the given referal code"},status=status.HTTP_400_BAD_REQUEST)
                 if request.data.get('referal_code') == request.data.get('email')+str("rfrc"):
                     return Response({"error":"you cannot use your own referal code!"},status=status.HTTP_400_BAD_REQUEST)
-                if request.data.get('referal_code') == User.objects.filter(email=request.data.get('email')).first().referal_code:
-                    return Response({"error":"you cannot use your own referal code!"},status=status.HTTP_400_BAD_REQUEST)
+                
                 if User.objects.filter(position_in_tree=request.data.get("tree_position"),recruited_by__referal_code=request.data.get('referal_code')).count() > 0:
                     return Response({"error":"the tree position you entered is already taken!"},status=status.HTTP_400_BAD_REQUEST)
             try:

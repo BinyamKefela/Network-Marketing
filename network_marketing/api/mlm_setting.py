@@ -33,7 +33,7 @@ class MlmSettingListView(generics.ListAPIView):
     filterset_fields = {
     #'name': ['exact', 'icontains'],
     'max_level':['exact','gt', 'gte', 'lt', 'lte'],
-    'mn_withdrawal_amount': ['exact','gt', 'gte', 'lt', 'lte'],
+    'min_withdrawal_amount': ['exact','gt', 'gte', 'lt', 'lte'],
     'payout_frequency': ['exact','gt', 'gte', 'lt', 'lte'],
     }
 

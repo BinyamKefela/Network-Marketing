@@ -96,6 +96,7 @@ class UserSerializer(serializers.ModelSerializer):
         else:
             # Regular users: only show explicitly assigned permissions
             representation["user_permissions"] = list(instance.user_permissions.values_list("codename", flat=True))
+            representation["recruited_by"] = instance.recruited_by.email if instance.recruited_by else None
         #representation['company'] = CompanySerializerForUser(instance.company).data
         #representation['subscriptions'] = SubscriptionSerializerForUser(Subscription.objects.filter(company=instance.company),many=True).data
         return representation
@@ -160,12 +161,24 @@ class SaleSerializer(serializers.ModelSerializer):
         model = Sale
         fields = "__all__"
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['package'] = PackageSerializer(instance.package).data if instance.package else None
+        representation['product'] = ProductSerializer(instance.product).data if instance.product else None
+        representation['buyer'] = UserSerializer(instance.buyer).data
+        representation['seller'] = UserSerializer(instance.seller).data
+        return representation
+
 
 class CommissionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Commission
         fields = "__all__"
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        return representation
 
 
 class WalletTransactionSerializer(serializers.ModelSerializer):
@@ -173,6 +186,12 @@ class WalletTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = WalletTransaction
         fields = "__all__"
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['user'] = UserSerializer(instance.user).data
+        representation['reference'] = CommissionSerializer(instance.reference).data if instance.reference else None
+        return representation
 
 class ProductImageSerializer(serializers.ModelSerializer):
 

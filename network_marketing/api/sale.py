@@ -274,7 +274,7 @@ def post_sale_new(request):
         while current_upline_user and level <= mlm_settings.max_level:
             try:
                 # Find commission percentage for the current level and category
-                config = UnilevelConfiguration.objects.get(level=level, category=category)
+                config = UnilevelConfiguration.objects.get(level=level)
                 
                 # Calculate the individual commission from the total commission pool
                 commission_amount = total_commission_pool * (config.percentage / 100)

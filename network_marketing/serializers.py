@@ -230,3 +230,9 @@ class UnilevelConfigurationSerializer(serializers.ModelSerializer):
         model = UnilevelConfiguration
         fields = "__all__"
 
+class TreeSettingSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TreeSetting
+        fields = "__all__"
+

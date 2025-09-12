@@ -22,7 +22,7 @@ from ..models import EmailResetCode
 from rest_framework.permissions import AllowAny
 from django.core.mail import send_mail
 from django.urls import reverse
-from ..models import EmailVerification
+from ..models import EmailVerification,TreeSetting
 import os
 from dotenv import load_dotenv
 import random
@@ -424,6 +424,21 @@ def sign_up(request):
             return Response({"error":"This phone number already exists in the system"},status=status.HTTP_400_BAD_REQUEST)
         
         if request.data.get('referal_code'):
+            if not request.data.get("tree_position"):
+                return Response({"error":"please provide tree position!"},status=status.HTTP_400_BAD_REQUEST)
+            else:
+                if int(request.data.get("tree_position"))>TreeSetting.objects.first().max_children:
+                    return Response({"error":"the tree position exceeds the maximum children allowed!"},status=status.HTTP_400_BAD_REQUEST)
+                if User.objects.filter(recruited_by__referal_code=request.data.get('referal_code')).count() > TreeSetting.objects.first().max_children:
+                    return Response({"error":"the referal code you entered has already reached the maximum number of recruits allowed!"},status=status.HTTP_400_BAD_REQUEST) 
+                if User.objects.filter(referal_code=request.data.get('referal_code')).count() == 0:
+                    return Response({"error":"there is no user with the given referal code"},status=status.HTTP_400_BAD_REQUEST)
+                if request.data.get('referal_code') == request.data.get('email')+str("rfrc"):
+                    return Response({"error":"you cannot use your own referal code!"},status=status.HTTP_400_BAD_REQUEST)
+                if request.data.get('referal_code') == User.objects.filter(email=request.data.get('email')).first().referal_code:
+                    return Response({"error":"you cannot use your own referal code!"},status=status.HTTP_400_BAD_REQUEST)
+                if User.objects.filter(position_in_tree=request.data.get("tree_position"),recruited_by__referal_code=request.data.get('referal_code')).count() > 0:
+                    return Response({"error":"the tree position you entered is already taken!"},status=status.HTTP_400_BAD_REQUEST)
             try:
                 refer_user = User.objects.get(referal_code=request.data.get('referal_code'))
             except:
@@ -453,6 +468,17 @@ def sign_up(request):
             user.email = request.data.get("email")
             user.is_active=False
             user.set_password(request.data.get("password"))
+
+            if request.data.get("first_name"):
+                user.first_name = request.data.get("first_name")
+            if request.data.get("middle_name"):
+                user.middle_name = request.data.get("middle_name")
+            if request.data.get("last_name"):
+                user.last_name = request.data.get("last_name")
+            if request.data.get("phone_number"):
+                user.phone_number = request.data.get("phone_number")
+            if request.data.get("address"):
+                user.address = request.data.get("address")
             user.save()
             if request.data.get('referal_code'):
                 from ..models import PromoterBuyer
@@ -460,6 +486,7 @@ def sign_up(request):
                 promoter_buyer.promoter = refer_user
                 promoter_buyer.buyer = user
                 promoter_buyer.save()
+                user.position_in_tree = request.data.get("tree_position")
                 user.recruited_by = refer_user
                 user.save()
             #if serializer.is_valid():

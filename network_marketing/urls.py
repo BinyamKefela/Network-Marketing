@@ -21,6 +21,7 @@ from .api.product_package import *
 from .api.training_package import *
 from .api.configuration import *
 from .api.unilevel_configuration import *
+from .api.tree_setting import *
 
 urlpatterns = [
 
@@ -198,5 +199,12 @@ path("post_unilevel_configuration", UnilevelConfigurationCreateView.as_view(), n
 path("update_unilevel_configuration/<int:id>", UnilevelConfigurationUpdateView.as_view(), name="update_unilevel_configuration"),
 path("delete_unilevel_configuration/<int:id>", UnilevelConfigurationDestroyView.as_view(), name="delete_unilevel_configuration"),
 
+
+#-----------------------------------tree setting routes-----------------------------------------
+path("get_tree_settings", TreeSettingListView.as_view(), name="get_tree_settings"),
+path("get_tree_setting/<int:id>", TreeSettingRetrieveView.as_view(), name="get_tree_setting"),
+path("post_tree_setting", TreeSettingCreateView.as_view(), name="post_tree_setting"),
+path("update_tree_setting/<int:id>", TreeSettingUpdateView.as_view(), name="update_tree_setting"),
+path("delete_tree_setting/<int:id>", TreeSettingDestroyView.as_view(), name="delete_tree_setting"),
 
 ]

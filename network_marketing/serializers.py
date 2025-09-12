@@ -178,6 +178,7 @@ class CommissionSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
+        representation['sale'] = SaleSerializer(instance.sale).data if instance.sale else None
         return representation
 
 

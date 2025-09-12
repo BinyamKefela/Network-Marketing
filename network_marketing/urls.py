@@ -114,7 +114,7 @@ path("delete_commission_configuration/<int:id>", CommissionConfigurationDestroyV
 #---------------------------------Sale routes------------------------------------------
 path("get_sales", SaleListView.as_view(), name="get_sales"),
 path("get_sale/<int:id>", SaleRetrieveView.as_view(), name="get_sale"),
-path("post_sale", post_sale, name="post_sale"),
+path("post_sale", post_sale_new, name="post_sale"),
 path("update_sale/<int:id>", SaleUpdateView.as_view(), name="update_sale"),
 path("delete_sale/<int:id>", SaleDestroyView.as_view(), name="delete_sale"),
 

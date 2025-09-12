@@ -38,7 +38,7 @@ class SaleListView(generics.ListAPIView):
     'buyer__email':['exact'],
     'seller__email':['exact'],
     'payment_date': ['exact','gt', 'gte', 'lt', 'lte'],
-    'amount': ['exact','gt', 'gte', 'lt', 'lte'],
+    'sub_total': ['exact','gt', 'gte', 'lt', 'lte'],
     }
 
 class SaleRetrieveView(generics.RetrieveAPIView):

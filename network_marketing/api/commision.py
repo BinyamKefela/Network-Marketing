@@ -35,8 +35,8 @@ class CommissionListView(generics.ListAPIView):
     'sale__id':['exact'],
     'sale__product__id':['exact'],
     'sale__product__name':['exact','icontains'],
-    'buyer__email':['exact'],
-    'seller__email':['exact'],
+    #'buyer__email':['exact'],
+    #'seller__email':['exact'],
     'amount': ['exact','gt', 'gte', 'lt', 'lte'],
     }
 

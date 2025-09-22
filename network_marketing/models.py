@@ -16,6 +16,8 @@ from datetime import timedelta
 
 import uuid
 from auditlog.registry import auditlog
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 # Create your models here.
 
@@ -85,8 +87,10 @@ class User(AbstractBaseUser,PermissionsMixin):
     level = models.IntegerField()
     recruited_by = models.ForeignKey('self',on_delete=models.SET_NULL,null=True,blank=True,related_name='recruited_by_user')
     position_in_tree = models.IntegerField(null=True, blank=True)
+    rank = models.ForeignKey('Rank',on_delete=models.SET_NULL,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
 
     # Make groups and user_permissions optional by adding blank=True and null=True
     groups = models.ManyToManyField(
@@ -239,13 +243,25 @@ class Configuration(models.Model):
     investment_amount = models.DecimalField(max_digits=20,decimal_places=2)
     housing_or_car_investment = models.DecimalField(max_digits=20,decimal_places=2)
     sacco = models.DecimalField(max_digits=20,decimal_places=2)
-    company_revenue_product_percentage = models.DecimalField(max_digits=5,decimal_places=2)
+    company_revenue_product_percentage = models.DecimalField(max_digits=5,decimal_places=2,validators=[
+            MinValueValidator(1.00),
+            MaxValueValidator(100.00)
+        ])
     company_revenue_product = models.DecimalField(max_digits=20,decimal_places=2)
-    product_disrtribution_reward_percentage = models.DecimalField(max_digits=20,decimal_places=2)
+    product_disrtribution_reward_percentage = models.DecimalField(max_digits=5,decimal_places=2,validators=[
+            MinValueValidator(1.00),
+            MaxValueValidator(100.00)
+        ])
     product_distribution_reward = models.DecimalField(max_digits=20,decimal_places=2)
-    company_revenue_training_percentage = models.DecimalField(max_digits=5,decimal_places=2)
+    company_revenue_training_percentage = models.DecimalField(max_digits=5,decimal_places=2,validators=[
+            MinValueValidator(1.00),
+            MaxValueValidator(100.00)
+        ])
     company_revenue_training = models.DecimalField(max_digits=20,decimal_places=2)
-    training_distribution_reward_percentage = models.DecimalField(max_digits=5,decimal_places=2)
+    training_distribution_reward_percentage = models.DecimalField(max_digits=5,decimal_places=2,validators=[
+            MinValueValidator(1.00),
+            MaxValueValidator(100.00)
+        ])
     training_distribution_reward = models.DecimalField(max_digits=20,decimal_places=2)
     service_charge = models.DecimalField(max_digits=100,decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -273,7 +289,10 @@ class Housing(models.Model):
 class UnilevelConfiguration(models.Model):
     level = models.IntegerField()
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
-    percentage = models.DecimalField(max_digits=5,decimal_places=2)
+    percentage = models.DecimalField(max_digits=5,decimal_places=2,validators=[
+            MinValueValidator(1.00),
+            MaxValueValidator(100.00)
+        ])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -282,14 +301,35 @@ class UnilevelConfiguration(models.Model):
 
 
 class CommissionConfiguration(models.Model):
-    direct_bonus = models.DecimalField(max_digits=100,decimal_places=2)
-    indirect_bonus = models.DecimalField(max_digits=100,decimal_places=2)
+    direct_bonus = models.DecimalField(max_digits=5,decimal_places=2,validators=[
+            MinValueValidator(1.00),
+            MaxValueValidator(100.00)
+        ])
+    indirect_bonus = models.DecimalField(max_digits=5,decimal_places=2,validators=[
+            MinValueValidator(1.00),
+            MaxValueValidator(100.00)
+        ])
     rank_achievement = models.DecimalField(max_digits=100,decimal_places=2)
-    unilevel_bonus = models.DecimalField(max_digits=100,decimal_places=2)
-    loyality_bonus = models.DecimalField(max_digits=100,decimal_places=2)
-    fast_track_bonus = models.DecimalField(max_digits=100,decimal_places=2)
-    display_bonus = models.DecimalField(max_digits=100,decimal_places=2)
-    incentive_bonus = models.DecimalField(max_digits=100,decimal_places=2)
+    unilevel_bonus = models.DecimalField(max_digits=5,decimal_places=2,validators=[
+            MinValueValidator(1.00),
+            MaxValueValidator(100.00)
+        ])
+    loyality_bonus = models.DecimalField(max_digits=5,decimal_places=2,validators=[
+            MinValueValidator(1.00),
+            MaxValueValidator(100.00)
+        ])
+    fast_track_bonus = models.DecimalField(max_digits=5,decimal_places=2,validators=[
+            MinValueValidator(1.00),
+            MaxValueValidator(100.00)
+        ])
+    display_bonus = models.DecimalField(max_digits=5,decimal_places=2,validators=[
+            MinValueValidator(1.00),
+            MaxValueValidator(100.00)
+        ])
+    incentive_bonus =models.DecimalField(max_digits=5,decimal_places=2,validators=[
+            MinValueValidator(1.00),
+            MaxValueValidator(100.00)
+        ])
     profit_share_bonus = models.DecimalField(max_digits=100,decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -311,9 +351,20 @@ class Sale(models.Model):
 
 
 class Commission(models.Model):
+    COMMISSION_TYPES = [('unilevel commission','unilevel commission'),
+                        ('direct commission','direct commission'),
+                        ('indirect commission','indirect commission'),
+                        ('rank achievement','rank achievement'),
+                        ('loyality bonus','loyality bonus'),
+                        ('fast track bonus','fast track bonus'),
+                        ('display bonus','display bonus'),
+                        ('incentive bonus','incentive bonus'),
+                        ('profit share bonus','profit share bonus'),
+                        ]
     sale = models.ForeignKey(Sale,on_delete=models.SET_NULL,null=True,blank=True)
     #seller = models.ForeignKey(User,on_delete=models.CASCADE,related_name='commission_seller')
     #buyer =  models.ForeignKey(User,on_delete=models.CASCADE,related_name='commission_buyer')
+    commission_type = models.CharField(max_length=200,choices=COMMISSION_TYPES)
     amount = models.DecimalField(max_digits=100,decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -326,7 +377,12 @@ class WalletTransaction(models.Model):
     type = models.CharField(max_length=100,choices=WALLET_TRANSACTION_CHOICES)
     reference = models.ForeignKey(Commission,on_delete=models.SET_NULL,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)    
+    updated_at = models.DateTimeField(auto_now=True) 
+
+class Rank(models.Model):
+    name = models.CharField(max_length=100,unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 

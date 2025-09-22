@@ -218,14 +218,16 @@ def post_sale_new(request):
         category = None
         if product_id:
             item = Product.objects.get(id=product_id)
-            sale_price = item.price
+            sale_price = item.price - item.cost
             category = item.category
+            total_price = sale_price * int(quantity)*(Configuration.objects.first().product_disrtribution_reward_percentage/100)
         elif package_id:
             item = Package.objects.get(id=package_id)
-            sale_price = item.price
+            sale_price = item.price - item.cost
             category = item.category
+            total_price = sale_price * int(quantity)*(Configuration.objects.first().training_distribution_reward_percentage/100)
         
-        total_price = sale_price * int(quantity)
+        #total_price = sale_price * int(quantity)*(Configuration.objects.first().product_disrtribution_reward_percentage/100)
         
         # Get MLM settings and commission configuration
         mlm_settings = MlmSetting.objects.first()
@@ -273,6 +275,22 @@ def post_sale_new(request):
         current_upline_user = buyer.recruited_by
         level = 1
 
+        #calculate direct commission bonus for the seller
+        direct_commission_amount = total_price * (commission_config.direct_bonus / 100)
+        commission = Commission.objects.create(
+                    sale=sale,
+                    amount=direct_commission_amount,
+                    commission_type=Commission.COMMISSION_TYPES[1]
+                )
+
+                # 5. Create a wallet transaction and update user's balance
+        WalletTransaction.objects.create(
+                    user=current_upline_user,
+                    amount=commission_amount,
+                    type='credit',
+                    reference=commission
+                )
+
         while current_upline_user and level <= mlm_settings.max_level:
             try:
                 # Find commission percentage for the current level and category
@@ -284,7 +302,8 @@ def post_sale_new(request):
                 # 4. Create a commission record
                 commission = Commission.objects.create(
                     sale=sale,
-                    amount=commission_amount
+                    amount=commission_amount,
+                    commission_type=Commission.COMMISSION_TYPES[0]
                 )
 
                 # 5. Create a wallet transaction and update user's balance

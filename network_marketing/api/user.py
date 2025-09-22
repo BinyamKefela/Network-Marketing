@@ -17,12 +17,12 @@ from django.db.models import F, Value
 from django.db.models.functions import Concat
 import json
 from django.conf import settings
-from ..models import EmailResetCode
+from ..models import EmailResetCode,Housing
 
 from rest_framework.permissions import AllowAny
 from django.core.mail import send_mail
 from django.urls import reverse
-from ..models import EmailVerification,TreeSetting
+from ..models import EmailVerification,TreeSetting,Rank
 import os
 from dotenv import load_dotenv
 import random
@@ -478,6 +478,10 @@ def sign_up(request):
                 user.phone_number = request.data.get("phone_number")
             if request.data.get("address"):
                 user.address = request.data.get("address")
+                try:
+                   user.rank = Rank.objects.get(name='Vision Builder')
+                except:
+                    return Response({"error":"Rank 'Vision Builder' does not exist, please contact the admin"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             user.save()
             if request.data.get('referal_code'):
                 from ..models import PromoterBuyer
@@ -488,6 +492,9 @@ def sign_up(request):
                 user.position_in_tree = request.data.get("tree_position")
                 user.recruited_by = refer_user
                 user.save()
+            housing = Housing()
+            housing.user = user
+            housing.amount_paid = 0
             #if serializer.is_valid():
             #    user = serializer.save(is_active=False)  # Initially set user as inactive
             verification = EmailVerification.objects.create(user=user)

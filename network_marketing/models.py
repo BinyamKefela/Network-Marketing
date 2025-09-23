@@ -174,7 +174,7 @@ class EmailResetCode(models.Model):
 
 class MlmSetting(models.Model):
     max_level = models.IntegerField()
-    min_withdrawal_amount = models.DecimalField(max_digits=1000,decimal_places=2)
+    business_volume_amount_in_sales = models.DecimalField(max_digits=1000,decimal_places=2)
     payout_frequency = models.IntegerField(null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -381,8 +381,10 @@ class WalletTransaction(models.Model):
 
 class Rank(models.Model):
     name = models.CharField(max_length=100,unique=True)
+    minimum_business_volume = models.DecimalField(max_digits=1000,decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
 
 
 

@@ -1,7 +1,7 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
 from rest_framework.filters import OrderingFilter,SearchFilter
-from ..models import Rank,TreeSetting
+from ..models import Rank,TreeSetting,MlmSetting,Sale,Rank
 from ..serializers import CommissionSerializer
 from network_marketing.api.custom_pagination import CustomPagination
 import datetime
@@ -14,6 +14,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import api_view,permission_classes
 from dotenv import load_dotenv
 from django.db.models import ForeignKey
+from django.db.models import Sum
+
 
 
 load_dotenv()
@@ -48,6 +50,18 @@ def upgrade_rank(user_id):
     
     if user.rank.name == "Global Influencer":
         make_legacy_share_holder(user_id)
+
+def make_vision_builder(user_id):
+    try:
+       user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        raise NotFound("User not found")
+    try:
+      if Sale.objects.filter(seller=user).aggregate(total=Sum('sub_total'))['total']/(MlmSetting.objects.first().business_volume_amount_in_sales)>=Rank.objects.get(name='Vision Builder').minimum_business_volume:
+          user.rank = Rank.objects.get(name='Vision Builder')
+          user.save()
+    except MlmSetting.DoesNotExist:
+        raise NotFound("MLM Setting not found")
 
 
 def make_growth_builder(user_id):

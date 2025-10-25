@@ -32,7 +32,8 @@ class HousingListView(generics.ListAPIView):
     ordering = ['id']
     filterset_fields = {
     #'name': ['exact', 'icontains'],
-    'name':['exact'],
+    'code':['exact'],
+    'location':['exact'],
     
     }
 

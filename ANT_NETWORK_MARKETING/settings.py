@@ -29,7 +29,7 @@ DEBUG = True
 CORS_ALLOW_ALL_ORIGINS = True
 
 
-ALLOWED_HOSTS = ['network-marketing.sunriseworld.org','localhost']
+ALLOWED_HOSTS = ['network-marketing.sunriseworld.org','localhost',"78.47.138.239","192.168.0.179","localhost",'127.0.0.1','alphapms.sunriseworld.org','www.alphapms.sunriseworld.org','localhost:5173','10.195.49.21','10.195.49.19']
 
 
 # Application definition
@@ -60,8 +60,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

@@ -244,22 +244,22 @@ class Configuration(models.Model):
     housing_or_car_investment = models.DecimalField(max_digits=20,decimal_places=2)
     sacco = models.DecimalField(max_digits=20,decimal_places=2)
     company_revenue_product_percentage = models.DecimalField(max_digits=5,decimal_places=2,validators=[
-            MinValueValidator(1.00),
+            MinValueValidator(0.00),
             MaxValueValidator(100.00)
         ])
     company_revenue_product = models.DecimalField(max_digits=20,decimal_places=2)
     product_disrtribution_reward_percentage = models.DecimalField(max_digits=5,decimal_places=2,validators=[
-            MinValueValidator(1.00),
+            MinValueValidator(0.00),
             MaxValueValidator(100.00)
         ])
     product_distribution_reward = models.DecimalField(max_digits=20,decimal_places=2)
     company_revenue_training_percentage = models.DecimalField(max_digits=5,decimal_places=2,validators=[
-            MinValueValidator(1.00),
+            MinValueValidator(0.00),
             MaxValueValidator(100.00)
         ])
     company_revenue_training = models.DecimalField(max_digits=20,decimal_places=2)
     training_distribution_reward_percentage = models.DecimalField(max_digits=5,decimal_places=2,validators=[
-            MinValueValidator(1.00),
+            MinValueValidator(0.00),
             MaxValueValidator(100.00)
         ])
     training_distribution_reward = models.DecimalField(max_digits=20,decimal_places=2)
@@ -290,7 +290,7 @@ class UnilevelConfiguration(models.Model):
     level = models.IntegerField()
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
     percentage = models.DecimalField(max_digits=5,decimal_places=2,validators=[
-            MinValueValidator(1.00),
+            MinValueValidator(0.00),
             MaxValueValidator(100.00)
         ])
     created_at = models.DateTimeField(auto_now_add=True)
@@ -302,32 +302,32 @@ class UnilevelConfiguration(models.Model):
 
 class CommissionConfiguration(models.Model):
     direct_bonus = models.DecimalField(max_digits=5,decimal_places=2,validators=[
-            MinValueValidator(1.00),
+            MinValueValidator(0.00),
             MaxValueValidator(100.00)
         ])
     indirect_bonus = models.DecimalField(max_digits=5,decimal_places=2,validators=[
-            MinValueValidator(1.00),
+            MinValueValidator(0.00),
             MaxValueValidator(100.00)
         ])
     rank_achievement = models.DecimalField(max_digits=100,decimal_places=2)
     unilevel_bonus = models.DecimalField(max_digits=5,decimal_places=2,validators=[
-            MinValueValidator(1.00),
+            MinValueValidator(0.00),
             MaxValueValidator(100.00)
         ])
     loyality_bonus = models.DecimalField(max_digits=5,decimal_places=2,validators=[
-            MinValueValidator(1.00),
+            MinValueValidator(0.00),
             MaxValueValidator(100.00)
         ])
     fast_track_bonus = models.DecimalField(max_digits=5,decimal_places=2,validators=[
-            MinValueValidator(1.00),
+            MinValueValidator(0.00),
             MaxValueValidator(100.00)
         ])
     display_bonus = models.DecimalField(max_digits=5,decimal_places=2,validators=[
-            MinValueValidator(1.00),
+            MinValueValidator(0.00),
             MaxValueValidator(100.00)
         ])
     incentive_bonus =models.DecimalField(max_digits=5,decimal_places=2,validators=[
-            MinValueValidator(1.00),
+            MinValueValidator(0.00),
             MaxValueValidator(100.00)
         ])
     profit_share_bonus = models.DecimalField(max_digits=100,decimal_places=2)

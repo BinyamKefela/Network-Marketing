@@ -32,7 +32,8 @@ class PromoterBuyerListView(generics.ListAPIView):
     ordering = ['id']
     filterset_fields = {
     #'name': ['exact', 'icontains'],
-    'name':['exact'],
+    'promoter':['exact'],
+    'buyer':['exact'],
     
     }
 

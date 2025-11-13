@@ -524,3 +524,19 @@ def verify_email(request, token):
             return Response({'message': 'Your email has already been verified.'}, status=status.HTTP_200_OK)
     except EmailVerification.DoesNotExist:
         return Response({'error': 'Invalid verification link.'}, status=status.HTTP_400_BAD_REQUEST)    
+    
+
+
+# views.py
+from rest_framework.decorators import api_view
+from ..serializers import UserTreeSerializer
+
+@api_view(['GET'])
+def user_genealogy_tree(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = UserTreeSerializer(user)
+    return Response(serializer.data)

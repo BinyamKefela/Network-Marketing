@@ -256,3 +256,20 @@ class TreeSettingSerializer(serializers.ModelSerializer):
         model = TreeSetting
         fields = "__all__"
 
+
+
+
+class UserTreeSerializer(serializers.ModelSerializer):
+    children = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = "__all__"
+
+    def get_children(self, obj):
+        children = User.objects.filter(recruited_by=obj)
+        if children.exists():
+            return UserTreeSerializer(children, many=True).data
+        return []
+
+

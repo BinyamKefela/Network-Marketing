@@ -43,6 +43,8 @@ urlpatterns = [
 
   path('auth/google', GoogleAuthView.as_view(), name='google_auth'),
 
+  path('get_user_tree/<int:user_id>/',user_genealogy_tree, name='user_genealogy_tree'),
+
 
   path('sign_up',sign_up, name='sign_up'),
   path('verify-email/<uuid:token>', verify_email, name='verify_email'),

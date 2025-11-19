@@ -482,6 +482,10 @@ def sign_up(request):
                    user.rank = Rank.objects.get(name='Vision Builder')
                 except:
                     return Response({"error":"Rank 'Vision Builder' does not exist, please contact the admin"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            if request.data.get("bank_name"):
+                user.bank_name = request.data.get("bank_name")
+            if request.data.get("account_number"):
+                user.account_number = request.data.get("account_number")
             user.save()
             if request.data.get('referal_code'):
                 from ..models import PromoterBuyer

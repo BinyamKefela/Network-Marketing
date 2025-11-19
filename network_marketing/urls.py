@@ -22,6 +22,7 @@ from .api.training_package import *
 from .api.configuration import *
 from .api.unilevel_configuration import *
 from .api.tree_setting import *
+from .api.withdrawal_request import *
 
 urlpatterns = [
 
@@ -208,5 +209,14 @@ path("get_tree_setting/<int:id>", TreeSettingRetrieveView.as_view(), name="get_t
 path("post_tree_setting", TreeSettingCreateView.as_view(), name="post_tree_setting"),
 path("update_tree_setting/<int:id>", TreeSettingUpdateView.as_view(), name="update_tree_setting"),
 path("delete_tree_setting/<int:id>", TreeSettingDestroyView.as_view(), name="delete_tree_setting"),
+
+
+#---------------------------------WithdrawalRequest routes------------------------------------------
+path("get_withdrawal_requests", WithdrawalRequestListView.as_view(), name="get_withdrawal_requests"),
+path("get_withdrawal_request/<int:id>", WithdrawalRequestRetrieveView.as_view(), name="get_withdrawal_request"),
+path("post_withdrawal_request", WithdrawalRequestCreateView.as_view(), name="post_withdrawal_request"),
+path("update_withdrawal_request/<int:id>", WithdrawalRequestUpdateView.as_view(), name="update_withdrawal_request"),
+path("delete_withdrawal_request/<int:id>", WithdrawalRequestDestroyView.as_view(), name="delete_withdrawal_request"),
+path("approve_withdrawal_request",approve_withdrawal_request,name="approve_withdrawal_request"),
 
 ]

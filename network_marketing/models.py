@@ -373,7 +373,7 @@ class Commission(models.Model):
 
 
 class WalletTransaction(models.Model):
-    WALLET_TRANSACTION_CHOICES = [('credit','credit'),('debit','debit')]
+    WALLET_TRANSACTION_CHOICES = [('credit','credit'),('debit','debit'),('withdrawal','withdrawal')]
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True)
     amount = models.DecimalField(max_digits=100,decimal_places=2)
     type = models.CharField(max_length=100,choices=WALLET_TRANSACTION_CHOICES)
@@ -384,6 +384,14 @@ class WalletTransaction(models.Model):
 class Rank(models.Model):
     name = models.CharField(max_length=100,unique=True)
     minimum_business_volume = models.DecimalField(max_digits=1000,decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class WithdrawalRequest(models.Model):
+    WITHDRAWAL_REQUEST_CHOICES = (('pending','pending'),('accepted','accepted'),('rejected','rejected'))
+    user = models.ForeignKey(User,null=True,blank=True,on_delete=models.CASCADE)
+    amount = models.FloatField(null=True,default=0)
+    status = models.CharField(max_length=200,choices=WITHDRAWAL_REQUEST_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

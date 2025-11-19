@@ -272,4 +272,13 @@ class UserTreeSerializer(serializers.ModelSerializer):
             return UserTreeSerializer(children, many=True).data
         return []
 
+class WithdrawalRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WithdrawalRequest
+        fields = "__all__"
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['user'] = UserSerializer(instance.user).data
+        return representation
 

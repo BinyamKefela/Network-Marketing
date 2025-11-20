@@ -23,6 +23,7 @@ from .api.configuration import *
 from .api.unilevel_configuration import *
 from .api.tree_setting import *
 from .api.withdrawal_request import *
+from .api.rank import *
 
 urlpatterns = [
 
@@ -218,5 +219,13 @@ path("post_withdrawal_request", WithdrawalRequestCreateView.as_view(), name="pos
 path("update_withdrawal_request/<int:id>", WithdrawalRequestUpdateView.as_view(), name="update_withdrawal_request"),
 path("delete_withdrawal_request/<int:id>", WithdrawalRequestDestroyView.as_view(), name="delete_withdrawal_request"),
 path("approve_withdrawal_request",approve_withdrawal_request,name="approve_withdrawal_request"),
+
+#---------------------------------Wallet transaction routes------------------------------------------
+path("get_wallet_transactions", WalletTransactionListView.as_view(), name="get_products"),
+path("get_wallet_transaction/<int:id>", WalletTransactionRetrieveView.as_view(), name="get_product"),
+path("post_wallet_transaction", WalletTransactionCreateView.as_view(), name="post_product"),
+path("update_wallet_transaction/<int:id>", WalletTransactionUpdateView.as_view(), name="update_product"),
+path("delete_wallet_transaction/<int:id>", WalletTransactionDestroyView.as_view(), name="delete_product"),
+
 
 ]

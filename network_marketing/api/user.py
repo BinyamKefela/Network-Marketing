@@ -34,6 +34,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 
 
 load_dotenv()
@@ -404,14 +407,60 @@ def update_user(request,id):
         user.profile_picture = profile_picture
     if password:
         user.set_password(password)
-    if company:
-        company = Company.objects.filter(id=company).first()
-        user.company = company
+    #if company:
+    #    company = Company.objects.filter(id=company).first()
+    #    user.company = company
 
     user.save()
 
     return Response({"message":"successfully updated user!"},status=status.HTTP_200_OK)
 
+
+@swagger_auto_schema(
+    method='post',
+    operation_description="User signup endpoint with optional referral & tree position validation.",
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        required=['email', 'phone_number', 'password'],
+        properties={
+            'email': openapi.Schema(type=openapi.TYPE_STRING, format='email',
+                                    description="User email address"),
+            'phone_number': openapi.Schema(type=openapi.TYPE_STRING,
+                                           description="User phone number"),
+            'password': openapi.Schema(type=openapi.TYPE_STRING,
+                                       description="User password"),
+            'first_name': openapi.Schema(type=openapi.TYPE_STRING,
+                                         description="(Optional) First name"),
+            'middle_name': openapi.Schema(type=openapi.TYPE_STRING,
+                                          description="(Optional) Middle name"),
+            'last_name': openapi.Schema(type=openapi.TYPE_STRING,
+                                        description="(Optional) Last name"),
+            'address': openapi.Schema(type=openapi.TYPE_STRING,
+                                      description="(Optional) User address"),
+            'bank_name': openapi.Schema(type=openapi.TYPE_STRING,
+                                        description="(Optional) Bank name"),
+            'account_number': openapi.Schema(type=openapi.TYPE_STRING,
+                                             description="(Optional) Bank account number"),
+            'referal_code': openapi.Schema(type=openapi.TYPE_STRING,
+                                           description="(Optional) Referral code from an existing user"),
+            'tree_position': openapi.Schema(type=openapi.TYPE_INTEGER,
+                                            description="(Required only if referal_code is provided) Position in tree"),
+        }
+    ),
+    responses={
+        201: openapi.Response(
+            description="Signup successful; verification email sent",
+            examples={
+                "application/json": {
+                    "message": "Registration successful. Please check your email to verify your account."
+                }
+            }
+        ),
+        400: "Invalid input or referral constraints violated",
+        403: "Email already exists",
+        500: "Server error (rank or internal logic)",
+    }
+)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])

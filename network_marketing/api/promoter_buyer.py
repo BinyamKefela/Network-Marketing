@@ -41,7 +41,7 @@ class PromoterBuyerRetrieveView(generics.RetrieveAPIView):
     queryset = PromoterBuyer.objects.all()
     serializer_class = PromoterBuyerSerializer
     permission_classes = [IsAuthenticated,DjangoModelPermissions]
-    lookup_field = ['id']
+    lookup_field = 'id'
 
 class PromoterBuyerUpdateView(generics.UpdateAPIView):
     queryset = PromoterBuyer.objects.all()

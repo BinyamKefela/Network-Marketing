@@ -40,7 +40,7 @@ class ProductImageRetrieveView(generics.RetrieveAPIView):
     queryset = ProductImage.objects.all()
     serializer_class = ProductImageSerializer
     permission_classes = [IsAuthenticated,DjangoModelPermissions]
-    lookup_field = ['id']
+    lookup_field = 'id'
 
 class ProductImageUpdateView(generics.UpdateAPIView):
     queryset = ProductImage.objects.all()

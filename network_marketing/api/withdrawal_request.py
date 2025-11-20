@@ -47,7 +47,7 @@ class WithdrawalRequestRetrieveView(generics.RetrieveAPIView):
     queryset = WithdrawalRequest.objects.all()
     serializer_class = WithdrawalRequestSerializer
     permission_classes = [IsAuthenticated,DjangoModelPermissions]
-    lookup_field = ['id']
+    lookup_field = 'id'
 
 class WithdrawalRequestUpdateView(generics.UpdateAPIView):
     queryset = WithdrawalRequest.objects.all()

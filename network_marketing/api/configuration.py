@@ -40,7 +40,7 @@ class ConfigurationRetrieveView(generics.RetrieveAPIView):
     queryset = Configuration.objects.all()
     serializer_class = ConfigurationSerializer
     permission_classes = [IsAuthenticated,DjangoModelPermissions]
-    lookup_field = ['id']
+    lookup_field = 'id'
 
 class ConfigurationUpdateView(generics.UpdateAPIView):
     queryset = Configuration.objects.all()

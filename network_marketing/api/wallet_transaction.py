@@ -44,7 +44,7 @@ class WalletTransactionRetrieveView(generics.RetrieveAPIView):
     queryset = WalletTransaction.objects.all()
     serializer_class = WalletTransactionSerializer
     permission_classes = [IsAuthenticated,DjangoModelPermissions]
-    lookup_field = ['id']
+    lookup_field = 'id'
 
 class WalletTransactionUpdateView(generics.UpdateAPIView):
     queryset = WalletTransaction.objects.all()

@@ -40,7 +40,7 @@ class CategoryRetrieveView(generics.RetrieveAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated,DjangoModelPermissions]
-    lookup_field = ['id']
+    lookup_field = 'id'
 
 class CategoryUpdateView(generics.UpdateAPIView):
     queryset = Category.objects.all()

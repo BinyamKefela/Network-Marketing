@@ -40,7 +40,7 @@ class UnilevelConfigurationRetrieveView(generics.RetrieveAPIView):
     queryset = UnilevelConfiguration.objects.all()
     serializer_class = UnilevelConfigurationSerializer
     permission_classes = [IsAuthenticated,DjangoModelPermissions]
-    lookup_field = ['id']
+    lookup_field = 'id'
 
 class UnilevelConfigurationUpdateView(generics.UpdateAPIView):
     queryset = UnilevelConfiguration.objects.all()

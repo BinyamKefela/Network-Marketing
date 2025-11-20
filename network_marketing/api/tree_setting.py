@@ -39,7 +39,7 @@ class TreeSettingRetrieveView(generics.RetrieveAPIView):
     queryset = TreeSetting.objects.all()
     serializer_class = TreeSettingSerializer
     permission_classes = [IsAuthenticated,DjangoModelPermissions]
-    lookup_field = ['id']
+    lookup_field = 'id'
 
 class TreeSettingUpdateView(generics.UpdateAPIView):
     queryset = TreeSetting.objects.all()

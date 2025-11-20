@@ -40,7 +40,7 @@ class TrainingPackageRetrieveView(generics.RetrieveAPIView):
     queryset = TrainingPackage.objects.all()
     serializer_class = TrainingPackageSerializer
     permission_classes = [IsAuthenticated,DjangoModelPermissions]
-    lookup_field = ['id']
+    lookup_field = 'id'
 
 class TrainingPackageUpdateView(generics.UpdateAPIView):
     queryset = TrainingPackage.objects.all()

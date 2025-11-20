@@ -42,7 +42,7 @@ class ProductPackageRetrieveView(generics.RetrieveAPIView):
     queryset = ProductPackage.objects.all()
     serializer_class = ProductPackageSerializer
     permission_classes = [IsAuthenticated,DjangoModelPermissions]
-    lookup_field = ['id']
+    lookup_field = 'id'
 
 class ProductPackageUpdateView(generics.UpdateAPIView):
     queryset = ProductPackage.objects.all()

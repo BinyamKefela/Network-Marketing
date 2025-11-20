@@ -41,7 +41,7 @@ class HousingRetrieveView(generics.RetrieveAPIView):
     queryset = Housing.objects.all()
     serializer_class = HousingSerializer
     permission_classes = [IsAuthenticated,DjangoModelPermissions]
-    lookup_field = ['id']
+    lookup_field = 'id'
 
 class HousingUpdateView(generics.UpdateAPIView):
     queryset = Housing.objects.all()

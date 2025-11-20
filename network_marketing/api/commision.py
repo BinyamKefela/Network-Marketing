@@ -44,7 +44,7 @@ class CommissionRetrieveView(generics.RetrieveAPIView):
     queryset = Commission.objects.all()
     serializer_class = CommissionSerializer
     permission_classes = [IsAuthenticated,DjangoModelPermissions]
-    lookup_field = ['id']
+    lookup_field = 'id'
 
 class CommissionUpdateView(generics.UpdateAPIView):
     queryset = Commission.objects.all()

@@ -41,7 +41,7 @@ class PackageRetrieveView(generics.RetrieveAPIView):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
     permission_classes = [IsAuthenticated,DjangoModelPermissions]
-    lookup_field = ['id']
+    lookup_field = 'id'
 
 class PackageUpdateView(generics.UpdateAPIView):
     queryset = Package.objects.all()

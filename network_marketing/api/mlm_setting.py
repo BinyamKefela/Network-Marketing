@@ -41,7 +41,7 @@ class MlmSettingRetrieveView(generics.RetrieveAPIView):
     queryset = MlmSetting.objects.all()
     serializer_class = MlmSettingSerializer
     permission_classes = [IsAuthenticated,DjangoModelPermissions]
-    lookup_field = ['id']
+    lookup_field = 'id'
 
 class MlmSettingUpdateView(generics.UpdateAPIView):
     queryset = MlmSetting.objects.all()

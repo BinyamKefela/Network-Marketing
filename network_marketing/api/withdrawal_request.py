@@ -37,7 +37,9 @@ class WithdrawalRequestListView(generics.ListAPIView):
     ordering = ['id']
     filterset_fields = {
     #'name': ['exact', 'icontains'],
-    'name':['exact'],
+    'user__email':['exact'],
+    'user_id':['exact'],
+    'status':['exact'],
     
     }
 

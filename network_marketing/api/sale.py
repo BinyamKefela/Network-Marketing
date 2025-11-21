@@ -14,6 +14,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import api_view,permission_classes
 from dotenv import load_dotenv
 from django.db.models import ForeignKey
+from django.db import transaction
 
 
 load_dotenv()
@@ -182,6 +183,7 @@ from ..models import (
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@transaction.atomic
 def post_sale_new(request):
     """
     Handles a post-sale event, records the sale, and distributes commissions 

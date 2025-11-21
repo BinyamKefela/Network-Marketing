@@ -395,6 +395,43 @@ class WithdrawalRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+class News(models.Model):
+    description = models.CharField(max_length=1000,null=True,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+def get_news_upload_path(instance,filename):
+    ext = filename.split('.')[-1]
+    new_file_name = "events/"+f'{instance.id}.{ext}'
+    return new_file_name
+
+class NewsPicture(models.Model):
+    news = models.ForeignKey(News,on_delete=models.CASCADE)
+    picture = models.FileField(upload_to=get_news_upload_path,validators=[validate_uploaded_image_extension],null=True,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Event(models.Model):
+    description = models.CharField(max_length=1000,null=True,blank=True)
+    start_date = models.DateField(null=False,blank=False)
+    end_date = models.DateField(null=True,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+def get_event_upload_path(instance,filename):
+    ext = filename.split('.')[-1]
+    new_file_name = "events/"+f'{instance.id}.{ext}'
+    return new_file_name
+
+class EventPicture(models.Model):
+    event = models.ForeignKey(Event,on_delete=models.CASCADE)
+    picture = models.FileField(upload_to=get_event_upload_path,validators=[validate_uploaded_image_extension],null=True,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
 
 
 

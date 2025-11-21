@@ -24,6 +24,10 @@ from .api.unilevel_configuration import *
 from .api.tree_setting import *
 from .api.withdrawal_request import *
 from .api.rank import *
+from .api.event import *
+from .api.event_picture import *
+from .api.news import *
+from .api.news_picture import *
 
 urlpatterns = [
 
@@ -222,11 +226,43 @@ path("delete_withdrawal_request/<int:id>", WithdrawalRequestDestroyView.as_view(
 path("approve_withdrawal_request",approve_withdrawal_request,name="approve_withdrawal_request"),
 
 #---------------------------------Wallet transaction routes------------------------------------------
-path("get_wallet_transactions", WalletTransactionListView.as_view(), name="get_products"),
-path("get_wallet_transaction/<int:id>", WalletTransactionRetrieveView.as_view(), name="get_product"),
-path("post_wallet_transaction", WalletTransactionCreateView.as_view(), name="post_product"),
-path("update_wallet_transaction/<int:id>", WalletTransactionUpdateView.as_view(), name="update_product"),
-path("delete_wallet_transaction/<int:id>", WalletTransactionDestroyView.as_view(), name="delete_product"),
+path("get_wallet_transactions", WalletTransactionListView.as_view(), name="get_wallet_transactions"),
+path("get_wallet_transaction/<int:id>", WalletTransactionRetrieveView.as_view(), name="get_wallet_transaction"),
+path("post_wallet_transaction", WalletTransactionCreateView.as_view(), name="post_wallet_transaction"),
+path("update_wallet_transaction/<int:id>", WalletTransactionUpdateView.as_view(), name="update_wallet_transaction"),
+path("delete_wallet_transaction/<int:id>", WalletTransactionDestroyView.as_view(), name="delete_wallet_transaction"),
 
+
+#---------------------------------event routes------------------------------------------
+path("get_events", EventListView.as_view(), name="get_events"),
+path("get_event/<int:id>", EventRetrieveView.as_view(), name="get_event"),
+path("post_event", EventCreateView.as_view(), name="post_event"),
+path("update_event/<int:id>", EventUpdateView.as_view(), name="update_event"),
+path("delete_event/<int:id>", EventDestroyView.as_view(), name="delete_event"),
+
+
+#---------------------------------event_picture picture routes------------------------------------------
+path("get_event_pictures", EventPictureListView.as_view(), name="get_event_pictures"),
+path("get_event_picture/<int:id>", EventPictureRetrieveView.as_view(), name="get_event_picture"),
+path("post_event_picture", EventPictureCreateView.as_view(), name="post_event_picture"),
+path("update_event_picture/<int:id>", EventPictureUpdateView.as_view(), name="update_event_picture"),
+path("delete_event_picture/<int:id>", EventPictureDestroyView.as_view(), name="delete_event_picture"),
+
+
+
+#---------------------------------news routes------------------------------------------
+path("get_news", NewsListView.as_view(), name="get_newss"),
+path("get_news/<int:id>", NewsRetrieveView.as_view(), name="get_news"),
+path("post_news", NewsCreateView.as_view(), name="post_news"),
+path("update_news/<int:id>", NewsUpdateView.as_view(), name="update_news"),
+path("delete_news/<int:id>", NewsDestroyView.as_view(), name="delete_news"),
+
+
+#---------------------------------news_picture picture routes------------------------------------------
+path("get_news_pictures", NewsPictureListView.as_view(), name="get_news_pictures"),
+path("get_news_picture/<int:id>", NewsPictureRetrieveView.as_view(), name="get_news_picture"),
+path("post_news_picture", NewsPictureCreateView.as_view(), name="post_news_picture"),
+path("update_news_picture/<int:id>", NewsPictureUpdateView.as_view(), name="update_news_picture"),
+path("delete_news_picture/<int:id>", NewsPictureDestroyView.as_view(), name="delete_news_picture"),
 
 ]

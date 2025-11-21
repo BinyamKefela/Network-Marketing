@@ -281,4 +281,34 @@ class WithdrawalRequestSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['user'] = UserSerializer(instance.user).data
         return representation
+    
+class NewsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = News
+        fields = "__all__"
+
+class NewsPictureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewsPicture
+        fields = "__all__"
+    
+    def to_representation(self, instance):
+        represntation = super().to_representation(instance)
+        represntation['news'] = NewsSerializer(instance.news).data
+        return represntation
+    
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = "__all__"
+
+class EventPictureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventPicture
+        fields = "__all__"
+    
+    def to_representation(self, instance):
+        represntation = super().to_representation(instance)
+        represntation['event'] = EventSerializer(instance.event).data
+        return represntation
 

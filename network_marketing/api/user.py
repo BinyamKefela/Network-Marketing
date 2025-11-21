@@ -593,3 +593,10 @@ def user_genealogy_tree(request, user_id):
 
     serializer = UserTreeSerializer(user)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_recent_joinings(request):
+    user = request.user
+    recent_joiners = User.objects.filter(recruited_by=user).order_by('-created_at')[:5]
+    return Response(UserSerializer(recent_joiners,many=True).data,status=status.HTTP_200_OK)

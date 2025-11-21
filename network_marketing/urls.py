@@ -42,6 +42,7 @@ urlpatterns = [
   #path("get_owners",get_owners,name="get_owners"),
   #path("get_managers",get_managers,name="get_managers"),
   #path("get_owners",GetOwners.as_view(),name="get_owners"),
+  path("get_recent_joinings",get_recent_joinings,name="get_recent_joinings"),
 
   path('auth/google', GoogleAuthView.as_view(), name='google_auth'),
 
